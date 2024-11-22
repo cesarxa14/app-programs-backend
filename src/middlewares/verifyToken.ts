@@ -1,12 +1,14 @@
+import { NextFunction, Request, Response } from "express";
+
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-async function verifyToken(req, res, next){
+export async function verifyToken(req: Request, res: Response, next: NextFunction){
     try{
         const {authorization} = req.headers;
         // console.log('authorization', authorization)
-        const token = authorization.split(' ')[1];
+        const token = authorization!.split(' ')[1];
         console.log('token', token);
-        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, data) => {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err:any, data:any) => {
             if(err){
                 throw err;
             }
@@ -16,9 +18,10 @@ async function verifyToken(req, res, next){
         });
 
     } catch(err) {
-        res.status(400).json({message: 'Unauthorized'});
+        res.status(401).json({message: 'Unauthorized'});
     }
     
 }
 
 module.exports = {verifyToken};
+

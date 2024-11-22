@@ -15,7 +15,7 @@ const createPackage = async(req: Request, res: Response) => {
         packages.status = status;
 
         const savedProduct = await AppDataSource.getRepository(Package).save(packages);
-    res.status(201).json(savedProduct);
+        res.status(201).json(savedProduct);
     } catch(err) {
         return res.status(400).json({message: err})
     }
@@ -30,7 +30,8 @@ const getPackages = async(req: Request, res: Response) => {
     }
 }
 
-module.exports.PackageController = {
+
+export const PackageController = {
     getPackages,
     createPackage,
-}
+};

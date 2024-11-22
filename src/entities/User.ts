@@ -1,28 +1,16 @@
 // src/entities/Product.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity({name: 'packages'})
-export class Package {
+@Entity({name: 'users'})
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({nullable: false, type: 'varchar'})
-  program: string;
+  username: string;
 
   @Column({nullable: false, type: 'varchar'})
-  name: string;
-
-  @Column({nullable: false, type: 'int'})
-  num_clases: number;
-
-  @Column({nullable: false, type: 'int'})
-  days_validity: number;
-
-  @Column({nullable: false, type: 'float'})
-  cost: number;
-
-  @Column({nullable: false, type: 'varchar', default: 'in progress'})
-  status: number;
+  password: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
@@ -31,5 +19,4 @@ export class Package {
   updatedAt: Date;
 }
 
-
-module.exports = {Package}
+module.exports = {User}
