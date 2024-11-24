@@ -8,12 +8,12 @@ dotenv.config();
 
 const login = async (req: Request, res: Response) => {
   try {
-    const { username, password} = req.body;
+    const { email, password} = req.body;
 
     // TODO: pasarlo a una funcion aparte
     const userFound  = await AppDataSource.getRepository(User).findOne({
       where: {
-        username: username
+        email: email
       }
     }); 
 
@@ -29,7 +29,7 @@ const login = async (req: Request, res: Response) => {
           return res.status(400).send({message: "Invalid password"})
     }
 
-    const token = jwt.sign({id: userFound.id}, process.env.JWT_SECRET_KEY, {expiresIn: 30});
+    const token = jwt.sign({id: userFound.id}, process.env.JWT_SECRET_KEY, {expiresIn: 1800});
 
     res.json({data:userFound, token});
   } catch (err) {
@@ -41,14 +41,13 @@ const login = async (req: Request, res: Response) => {
 const register = async (req: Request, res: Response) => {
   try{
 
-    const { username, password} = req.body;
+    const { name, lastname, email, role, password} = req.body;
     const salt = await bcrypt.genSalt(10);
     const passwordEncrypt = await bcrypt.hash(password, salt)
 
     const userFound  = await AppDataSource.getRepository(User).findOne({
       where: {
-        username: username,
-        password: passwordEncrypt
+        email: email
       }
     }); 
 
@@ -57,7 +56,10 @@ const register = async (req: Request, res: Response) => {
     }
     let newUser = new User();
 
-    newUser.username = username
+    newUser.name = name
+    newUser.lastname = lastname
+    newUser.email = email
+    newUser.role = role
     newUser.password = passwordEncrypt
 
     const savedUser = await AppDataSource.getRepository(User).save(newUser);

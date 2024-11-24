@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import morgan from 'morgan';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -7,6 +8,8 @@ import {indexRoutes} from "./api/index";
 
 // USAMOS CORS
 app.use(cors())
+
+app.use(morgan('dev'));
 
 //Agregamos handler para recibir json
 app.use(express.json());

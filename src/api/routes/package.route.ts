@@ -7,8 +7,12 @@ const {PackageController} = require('../../controllers/package.controller');
 function PackageRoutes(app: Express){
     app.use('/packages', router);
 
-    router.get('/',[ verifyToken] ,PackageController.getPackages);
+    router.get('/',
+        // [ verifyToken] ,
+        PackageController.getPackages);
     router.post('/', PackageController.createPackage);
+    router.put('/:id', PackageController.updatePackage);
+    router.delete('/:id', PackageController.deletePackage);
 }
 
 export {PackageRoutes}
