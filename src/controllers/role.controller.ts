@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../ddbb/data-source";
 import { Role } from "../entities/Role";
 
 const getRoles = async(req: Request, res: Response) => {

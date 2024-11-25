@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../ddbb/data-source";
 import { User } from "../entities/User";
 import * as bcrypt from "bcrypt"
 import * as jwt from 'jsonwebtoken';

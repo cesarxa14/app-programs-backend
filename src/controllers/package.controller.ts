@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Package } from '../entities/Package';
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../ddbb/data-source";
 
 const createPackage = async(req: Request, res: Response) => {
 

@@ -1,9 +1,9 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import * as dotenv from "dotenv";
-import { Package } from "./entities/Package";
-import { User } from "./entities/User";
-import { Program } from "./entities/Program";
-import { Role } from "./entities/Role";
+import { Package } from "../entities/Package";
+import { User } from "../entities/User";
+import { Program } from "../entities/Program";
+import { Role } from "../entities/Role";
 
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 const options : DataSourceOptions= {
