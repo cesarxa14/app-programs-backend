@@ -4,11 +4,12 @@ import { Program } from "../entities/Program";
 
 const createProgram = async(req: Request, res: Response) => {
 
-    const { name, description, startDate, endDate } = req.body;
+    const { user_id, name, description, startDate, endDate } = req.body;
     try{
         let newProgram = new Program();
         newProgram.name = name;
         newProgram.description = description;
+        newProgram.user = user_id;
         newProgram.startDate = startDate;
         newProgram.endDate = endDate;
     
@@ -21,12 +22,22 @@ const createProgram = async(req: Request, res: Response) => {
 }
 
 const getPrograms = async(req: Request, res: Response) => {
-    try{
-        const results = await AppDataSource.getRepository(Program).find({
-            order: {
-                id: 'DESC'
-            }
-        });
+    try{ 
+        const {userId} = req.query;
+        console.log('userId', userId)
+        const results = await AppDataSource.getRepository(Program)
+                        .createQueryBuilder('programs')
+                        .innerJoinAndSelect('programs.user', 'users')
+                        .select([
+                            'programs.id',
+                            'programs.name',
+                            'programs.description',
+                            'programs.startDate',
+                            'programs.endDate',
+                        ])
+                        .where('users.id = :userId', { userId })
+                        .getMany();
+        console.log('results:', results)
         return res.json({data: results})
     } catch (err) {
         console.log('err: ', err)
@@ -35,6 +46,7 @@ const getPrograms = async(req: Request, res: Response) => {
 
 const updateProgram = async(req: Request, res: Response) => {
     try{
+
         const {id} = req.params;
         const {name, description, startDate, endDate} = req.body;
 
@@ -47,6 +59,7 @@ const updateProgram = async(req: Request, res: Response) => {
         programToUpdate.name = name || programToUpdate.name;
         programToUpdate.description = description || programToUpdate.description;
         programToUpdate.startDate = startDate || programToUpdate.startDate;
+        
         programToUpdate.endDate = endDate || programToUpdate.endDate;
 
         const updatedProgram = await AppDataSource.getRepository(Program).save(programToUpdate);

@@ -10,8 +10,8 @@ function MyCustomerRoutes(app: Express){
     router.get('/',
         // [ verifyToken] ,
         MyCustomerController.getMyCustomers);
-    // router.post('/', PackageController.createPackage);
-    // router.put('/:id', PackageController.updatePackage);
+    router.post('/', MyCustomerController.createMyCustomer);
+    router.put('/:id', MyCustomerController.updateMyCustomer);
     // router.delete('/:id', PackageController.deletePackage);
 }
 

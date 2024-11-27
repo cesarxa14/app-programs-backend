@@ -9,6 +9,8 @@ function AuthRoutes(app: Express){
 
     router.post('/login', AuthController.login);
     router.post('/register', AuthController.register);
+    router.post('/complete-register', AuthController.completeRegister);
+    router.post('/verifyUser', AuthController.verifyUser);
     
 }
 

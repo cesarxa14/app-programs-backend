@@ -18,7 +18,7 @@ const options : DataSourceOptions= {
   synchronize: true,
 //logging logs sql command on the treminal
   logging: NODE_ENV === "dev" ? false : false,
-  entities: [Program,Package, User, Role], 
+  entities: [User, Program,Package, , Role], 
 
   // migrations: [__dirname + "/migration/*.ts"],
   // subscribers: [],

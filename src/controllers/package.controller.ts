@@ -6,6 +6,7 @@ const createPackage = async(req: Request, res: Response) => {
 
     const { program, name, num_clases, expiration, cost, status } = req.body;
     try{
+        console.log('body: ', req.body)
         let packages = new Package();
         packages.program = program;
         packages.name = name;
