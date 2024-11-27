@@ -1,22 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
 
-@Entity({name: 'programs'})
-export class Program {
+@Entity({name: 'purchases'})
+export class Purchase {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({nullable: false, type: 'varchar'})
-  name: string;
+  service: string;
 
-  @Column({nullable: false, type: 'varchar'})
-  description: string;
-
-  @Column({nullable: false, type: 'timestamp'})
-  startDate: Date;
-
-  @Column({nullable: false, type: 'timestamp'})
-  endDate: Date;
+  @Column({nullable: false, type: 'int'})
+  amount: number;
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' }) 

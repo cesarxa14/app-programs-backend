@@ -4,12 +4,14 @@ import { Package } from "../entities/Package";
 import { User } from "../entities/User";
 import { Program } from "../entities/Program";
 import { Role } from "../entities/Role";
+import { Subscription } from "../entities/Subscription";
+import { Purchase } from "../entities/Purchase";
 
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 const options : DataSourceOptions= {
   type: "postgres",
   host: DB_HOST || 'localhost',
-  port: parseInt(DB_PORT || "5433"),
+  port: parseInt(DB_PORT || "5432"),
   username: DB_USERNAME || 'postgres',
   password: DB_PASSWORD || 'chelseafc11',
   database: DB_DATABASE || 'app-programas',
@@ -18,7 +20,7 @@ const options : DataSourceOptions= {
   synchronize: true,
 //logging logs sql command on the treminal
   logging: NODE_ENV === "dev" ? false : false,
-  entities: [User, Program,Package, , Role], 
+  entities: [User, Program,Package, Role, Subscription, Purchase], 
 
   // migrations: [__dirname + "/migration/*.ts"],
   // subscribers: [],

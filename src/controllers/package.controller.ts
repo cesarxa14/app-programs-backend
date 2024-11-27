@@ -29,13 +29,16 @@ const createPackage = async(req: Request, res: Response) => {
 
 const getPackages = async(req: Request, res: Response) => {
     try{
-        const results = await AppDataSource.getRepository(Package).find({
-            order: {
-                id: 'DESC'
-            },
-            relations: ['program']
-
-        });
+        const {userId} = req.query;
+        let sql = `
+            SELECT pr.name as program, p.*
+                FROM packages p
+                INNER JOIN programs pr ON p.program_id = pr.id
+                INNER JOIN users u ON u.id = pr.user_id
+                WHERE u.id = $1
+                ORDER BY p.id DESC
+        `
+        const results = await AppDataSource.query(sql, [userId])
         return res.json({data: results})
     } catch (err) {
         console.log('err: ', err)
@@ -72,7 +75,7 @@ const deletePackage = async(req: Request, res: Response) => {
 
         const {id} = req.params;
 
-        const deletedPackage = await await AppDataSource.getRepository(Package).delete(id);
+        const deletedPackage = await AppDataSource.getRepository(Package).update(id, {deleted: 1});
         return res.json({data: deletedPackage})
 
     } catch (err) {

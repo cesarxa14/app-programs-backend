@@ -52,6 +52,9 @@ export class User {
   @Column({nullable: true, type: 'boolean', default: false})
   isVerified: boolean;
 
+  @Column({nullable: false, type: 'smallint', default: 0})
+  deleted: number;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 

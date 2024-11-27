@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../ddbb/data-source";
 import { Program } from "../entities/Program";
+import { DataSource } from "typeorm";
 
 const createProgram = async(req: Request, res: Response) => {
 
@@ -25,18 +26,16 @@ const getPrograms = async(req: Request, res: Response) => {
     try{ 
         const {userId} = req.query;
         console.log('userId', userId)
-        const results = await AppDataSource.getRepository(Program)
-                        .createQueryBuilder('programs')
-                        .innerJoinAndSelect('programs.user', 'users')
-                        .select([
-                            'programs.id',
-                            'programs.name',
-                            'programs.description',
-                            'programs.startDate',
-                            'programs.endDate',
-                        ])
-                        .where('users.id = :userId', { userId })
-                        .getMany();
+        const params = [];
+        let sql = `
+            SELECT p.* 
+                FROM programs p
+                INNER JOIN users u ON u.id = p.user_id
+                WHERE p.user_id = $1
+                AND p.deleted = 0
+        `
+        params.push(Number(userId))
+        const results = await AppDataSource.query(sql, params)
         console.log('results:', results)
         return res.json({data: results})
     } catch (err) {
@@ -74,7 +73,7 @@ const deleteProgram = async(req: Request, res: Response) => {
 
         const {id} = req.params;
 
-        const deletedProgram = await await AppDataSource.getRepository(Program).delete(id);
+        const deletedProgram = await await AppDataSource.getRepository(Program).update(id, {deleted: 1});
         return res.json({data: deletedProgram})
 
     } catch (err) {

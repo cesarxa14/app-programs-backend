@@ -1,16 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
 
-@Entity({name: 'programs'})
-export class Program {
+@Entity({name: 'subscriptions'})
+export class Subscription {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({nullable: false, type: 'varchar'})
-  name: string;
-
-  @Column({nullable: false, type: 'varchar'})
-  description: string;
+  service: string;
 
   @Column({nullable: false, type: 'timestamp'})
   startDate: Date;

@@ -12,7 +12,7 @@ function MyCustomerRoutes(app: Express){
         MyCustomerController.getMyCustomers);
     router.post('/', MyCustomerController.createMyCustomer);
     router.put('/:id', MyCustomerController.updateMyCustomer);
-    // router.delete('/:id', PackageController.deletePackage);
+    router.delete('/:id', MyCustomerController.deleteCustomer);
 }
 
 export {MyCustomerRoutes}

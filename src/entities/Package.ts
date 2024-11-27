@@ -2,6 +2,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Program } from './Program';
 
+export enum packageStatus {
+  HABILITADO = 'HABILITADO',
+  DESAHABILITADO = 'DESHABILITADO'
+}
+
 @Entity({name: 'packages'})
 export class Package {
   @PrimaryGeneratedColumn()
@@ -28,8 +33,11 @@ export class Package {
   @Column({nullable: false, type: 'float'})
   cost: number;
 
-  @Column({nullable: false, type: 'varchar', enum: ["HABILITADO", "DESHABILITADO"], default: "HABILITADO"})
+  @Column({nullable: false, type: 'varchar', enum: packageStatus, default: packageStatus.HABILITADO})
   status: string;
+
+  @Column({nullable: false, type: 'smallint', default: 0})
+  deleted: number;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;

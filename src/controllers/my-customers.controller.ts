@@ -7,7 +7,7 @@ import { sendMail } from "../logic/logic_mailer";
 
 const getMyCustomers = async(req: Request, res: Response) => {
     try{
-        const whereConditions: any = { role: 3 };
+        const whereConditions: any = { role: 3, deleted: 0 };
         console.log(req.query)
         
         const results = await AppDataSource.getRepository(User).find({
@@ -110,9 +110,22 @@ const updateMyCustomer = async(req: Request, res: Response) => {
     }
 }
 
+const deleteCustomer = async(req: Request, res: Response) => {
+    try {
+
+        const {id} = req.params;
+
+        const deletedUser = await AppDataSource.getRepository(User).update(id, {deleted: 1});
+        return res.json({data: deletedUser})
+
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
 export const MyCustomerController = {
     getMyCustomers,
     createMyCustomer,
-    updateMyCustomer
-    // deletePackage
+    updateMyCustomer,
+    deleteCustomer
 };
