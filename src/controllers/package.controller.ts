@@ -35,10 +35,9 @@ const getPackages = async(req: Request, res: Response) => {
                 FROM packages p
                 INNER JOIN programs pr ON p.program_id = pr.id
                 INNER JOIN users u ON u.id = pr.user_id
-                WHERE u.id = $1
                 ORDER BY p.id DESC
         `
-        const results = await AppDataSource.query(sql, [userId])
+        const results = await AppDataSource.query(sql)
         return res.json({data: results})
     } catch (err) {
         console.log('err: ', err)
