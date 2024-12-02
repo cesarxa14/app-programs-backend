@@ -5,22 +5,21 @@ import * as bcrypt from "bcrypt"
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import { sendMail } from "../logic/logic_mailer";
+import { UserLogic } from "../logic/user.logic";
 dotenv.config();
 
 interface JwtPayload {
   id: number;
 }
 
+const userLogic = new UserLogic(AppDataSource)
+
 const login = async (req: Request, res: Response) => {
   try {
     const { email, password} = req.body;
 
     // TODO: pasarlo a una funcion aparte
-    const userFound  = await AppDataSource.getRepository(User).findOne({
-      where: {
-        email: email
-      }
-    }); 
+    const userFound  = await userLogic.getUserByEmail(email); 
 
     if(!userFound) {
       return res.status(404).send({message: "User not found"})
@@ -50,47 +49,19 @@ const login = async (req: Request, res: Response) => {
 const register = async (req: Request, res: Response) => {
   try{
 
-    const { name, lastname, email, role, password} = req.body;
-    const salt = await bcrypt.genSalt(10);
-    const passwordEncrypt = await bcrypt.hash(password, salt)
-
-    const userFound  = await AppDataSource.getRepository(User).findOne({
-      where: {
-        email: email
-      }
-    }); 
+    const { email} = req.body;
+    const userFound  = await userLogic.getUserByEmail(email);
 
     if(userFound) {
       return res.status(400).send({message: "User already exists"})
     }
-    let newUser = new User();
-
-    newUser.name = name
-    newUser.lastname = lastname
-    newUser.email = email
-    newUser.role = role
-    newUser.password = passwordEncrypt
-
-    const savedUser = await AppDataSource.getRepository(User).save(newUser);
-
-    const token = jwt.sign({id: savedUser.id}, process.env.JWT_SECRET_KEY , {expiresIn: 30}); 
-    // TODO: PASARLO A UNA FUNCIONA APARTE
-    const verificationLink = `http://localhost:4200/auth/verify-email?token=${token}`;
-    const bodyHTML = `
-        <div>
-            <h1>Verifica tu cuenta dando click en el siguiente enlace</h1>
-            <p>
-                <a href="${verificationLink}">Click para verificar</a>
-            </p>
-        </div>
-    `
-
-    const sendEmail = await sendMail(newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
+    
+    const registeredUser = await userLogic.register(req.body)
 
     return res.status(201).json({
-      token,
-      data: savedUser
-  });
+      token: registeredUser.token,
+      data: registeredUser.savedUser
+    });
 
   } catch(err) {
     console.log('error: ', err)

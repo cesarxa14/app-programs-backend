@@ -4,7 +4,7 @@ import { AppDataSource } from "../ddbb/data-source";
 
 const createPackage = async(req: Request, res: Response) => {
 
-    const { program, name, num_clases, expiration, cost, status } = req.body;
+    const { program, name, num_clases, expiration, cost, status, activeDays, activeHours } = req.body;
     try{
         console.log('body: ', req.body)
         let packages = new Package();
@@ -14,6 +14,8 @@ const createPackage = async(req: Request, res: Response) => {
         packages.expiration = expiration;
         packages.cost = cost;
         packages.status = status;
+        packages.activeDays = activeDays;
+        packages.activeHours = activeHours;
 
         const savedPackage = await AppDataSource.getRepository(Package).save(packages);
 
