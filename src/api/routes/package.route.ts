@@ -10,6 +10,9 @@ function PackageRoutes(app: Express){
     router.get('/',
         // [ verifyToken] ,
         PackageController.getPackages);
+    router.get('/enables',
+        // [ verifyToken] ,
+        PackageController.getPackagesEnables);
     router.post('/', PackageController.createPackage);
     router.put('/:id', PackageController.updatePackage);
     router.delete('/:id', PackageController.deletePackage);

@@ -44,6 +44,25 @@ const getPackages = async(req: Request, res: Response) => {
     }
 }
 
+
+const getPackagesEnables = async(req: Request, res: Response) => {
+    try{
+        const {userId} = req.query;
+        let sql = `
+            SELECT pr.name as program, p.*
+                FROM packages p
+                INNER JOIN programs pr ON p.program_id = pr.id
+                INNER JOIN users u ON u.id = pr.user_id
+                WHERE status = 'HABILITADO'
+                ORDER BY p.id DESC
+        `
+        const results = await AppDataSource.query(sql)
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
 const updatePackage = async(req: Request, res: Response) => {
     try{
         const {id} = req.params;
@@ -85,6 +104,7 @@ const deletePackage = async(req: Request, res: Response) => {
 
 export const PackageController = {
     getPackages,
+    getPackagesEnables,
     createPackage,
     updatePackage,
     deletePackage

@@ -24,6 +24,12 @@ export class Package {
   @Column({nullable: true, type: 'varchar'})
   description: string;
 
+  @Column({nullable: true, type: 'varchar'})
+  activeDays: string;
+
+  @Column({nullable: true, type: 'varchar'})
+  activeHours: string;
+
   @Column({nullable: false, type: 'int'})
   num_clases: number;
 
