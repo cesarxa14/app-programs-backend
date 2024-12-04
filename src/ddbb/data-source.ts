@@ -13,7 +13,7 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = pr
 const options : DataSourceOptions= {
   type: "postgres",
   host: DB_HOST || 'localhost',
-  port: parseInt(DB_PORT || "5433"),
+  port: parseInt(DB_PORT || "5432"),
   username: DB_USERNAME || 'postgres',
   password: DB_PASSWORD || 'chelseafc11',
   database: DB_DATABASE || 'app-programas',
