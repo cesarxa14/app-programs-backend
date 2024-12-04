@@ -7,6 +7,7 @@ const {MyCustomerRoutes} = require('./routes/my-customer.route');
 const {SubscriptionRoutes} = require('./routes/subscription.route');
 const {PurchaseRoutes} = require('./routes/purchase.route');
 const {BookRoutes} = require('./routes/book.route')
+const {SaleRoutes} = require('./routes/sale.route')
 
 
 function indexRoutes(app: Express){
@@ -17,7 +18,9 @@ function indexRoutes(app: Express){
     MyCustomerRoutes(app);
     SubscriptionRoutes(app);
     PurchaseRoutes(app);
-    BookRoutes(app)
+    BookRoutes(app);
+    SaleRoutes(app);
+
 }
 
 export {indexRoutes}

@@ -36,6 +36,10 @@ export class BookLogic {
 
     try {
       const { program, classDate, classHour, userCreator, userBooked, additional_notes } = body;
+
+      // TODO: VALIDAMOS SI EL USUARIO YA CUENTA CON PAQUETES
+
+      // const userWithPackage = await logi
       console.log('body:', body)
         let newBook = new Book();
         newBook.program = program;
