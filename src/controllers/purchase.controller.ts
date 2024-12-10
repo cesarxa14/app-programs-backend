@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { Purchase } from "../entities/Purchase";
 import { AppDataSource } from "../ddbb/data-source";
+import { PurchaseLogic } from "../logic/purchase.logic";
+
+const purchaseLogic = new PurchaseLogic(AppDataSource)
 
 const createPurchase = async(req: Request, res: Response) => {
 
@@ -24,16 +27,8 @@ const createPurchase = async(req: Request, res: Response) => {
 const getPurchaseByUser = async(req: Request, res: Response) => {
   try{ 
   
-      const {userId} = req.query;
-      console.log('userId', userId)
-      let sql = `
-          SELECT * 
-            FROM purchases 
-            WHERE deleted = 0
-            AND user_id = $1
-            ORDER BY id DESC
-      `
-      const results = await AppDataSource.query(sql, [userId])
+      const results = await purchaseLogic.getPurchaseByUser(req.query)
+      // const results = await AppDataSource.query(sql, [userId])
       console.log('results:', results)
       return res.json({data: results})
   } catch (err) {

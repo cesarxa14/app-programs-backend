@@ -51,7 +51,7 @@ const getPackagesEnables = async(req: Request, res: Response) => {
     try{
         const {userId} = req.query;
         let sql = `
-            SELECT pr.name as program, p.*
+            SELECT pr.name as program, p.*, u.phone
                 FROM packages p
                 INNER JOIN programs pr ON p.program_id = pr.id
                 INNER JOIN users u ON u.id = pr.user_id

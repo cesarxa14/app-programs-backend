@@ -18,9 +18,20 @@ const createSubscription = async(req: Request, res: Response) => {
 
 const getSubscriptionByUser = async(req: Request, res: Response) => {
   try{ 
-  
       const query = req.query;
       const results = await subscriptionLogic.getSubscriptionByUser(query);
+      console.log('results:', results)
+      return res.json({data: results})
+  } catch (err) {
+      console.log('err: ', err)
+  }
+}
+
+const getSubscriptionValidByUser = async(req: Request, res: Response) => {
+  try{ 
+      const query = req.query;
+      
+      const results = await subscriptionLogic.getSubscriptionValidByUser(query);
       console.log('results:', results)
       return res.json({data: results})
   } catch (err) {
@@ -31,5 +42,6 @@ const getSubscriptionByUser = async(req: Request, res: Response) => {
 
 export const SubscriptionController = {
   createSubscription,
-  getSubscriptionByUser
+  getSubscriptionByUser,
+  getSubscriptionValidByUser
 };

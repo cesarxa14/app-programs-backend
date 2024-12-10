@@ -14,8 +14,8 @@ export class Book {
   @Column({nullable: false, type: 'timestamp'})
   classDate: Date;
 
-  @Column({nullable: false, type: 'timestamp'})
-  classHour: Date;
+  @Column({nullable: false, type: 'varchar'})
+  classHour: string;
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_creator_id' }) 

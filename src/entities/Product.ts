@@ -36,6 +36,9 @@ export class Product {
   @JoinColumn({ name: 'user_id' }) 
   user: User;
 
+  @Column({nullable: false, type: 'smallint', default: 0})
+  deleted: number;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 

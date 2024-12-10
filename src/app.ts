@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from 'morgan';
+import bodyParser from 'body-parser';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -10,6 +11,8 @@ import {indexRoutes} from "./api/index";
 app.use(cors())
 
 app.use(morgan('dev'));
+
+app.use(bodyParser.json());
 
 //Agregamos handler para recibir json
 app.use(express.json());

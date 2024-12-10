@@ -1,13 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
+import { Product } from './Product';
 
 @Entity({name: 'purchases'})
 export class Purchase {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable: false, type: 'varchar'})
-  service: string;
+  @ManyToOne(() => Product, (prod) => prod.id, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'product_id' }) 
+  service: Product;
 
   @Column({nullable: false, type: 'int'})
   amount: number;

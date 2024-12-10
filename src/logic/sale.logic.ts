@@ -2,9 +2,11 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../ddbb/data-source";
 import { Sale } from "../entities/Sale";
 import { SubscriptionLogic } from "./subscription.logic";
+import { ProductLogic } from "./product.logic";
+import { PurchaseLogic } from "./purchase.logic";
 
 const subscriptionLogic = new SubscriptionLogic(AppDataSource);
-
+const purchaseLogic = new PurchaseLogic(AppDataSource);
 
 export class SaleLogic {
 
@@ -34,7 +36,7 @@ export class SaleLogic {
     async createSale(body:any){
         try {
             const { amount, category, igv, saleDate, 
-                payment_method, saleName,  type_voucher,
+                payment_method, saleName, itemId,  type_voucher,
                 sellerId, customerId} = body;
 
             console.log('body:', body)
@@ -52,7 +54,10 @@ export class SaleLogic {
             let date = new Date();
             // todo: obtener la fecha inicio y fin del servicio
             if(category == 'servicio'){
-                await subscriptionLogic.createSubscription({user_id: customerId, service: saleName , startDate: date , endDate: date})
+                
+                await subscriptionLogic.createSubscription({user_id: customerId, service: itemId , startDate: date , endDate: date})
+            }else if(category == 'producto'){
+                await purchaseLogic.createPurchase({user_id: customerId, product_id: itemId, amount: amount})
             }
 
             const savedSale = await AppDataSource.getRepository(Sale).save(newSale);

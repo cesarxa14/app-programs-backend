@@ -1,13 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
+import { Package } from './Package';
 
 @Entity({name: 'subscriptions'})
 export class Subscription {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable: false, type: 'varchar'})
-  service: string;
+  @ManyToOne(() => Package, (pack) => pack.id, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'package_id' }) 
+  service: Package;
 
   @Column({nullable: false, type: 'timestamp'})
   startDate: Date;
