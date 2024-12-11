@@ -29,4 +29,26 @@ export class PackageLogic {
         }
     }
 
+    async getNumClassesByUser(query: any){
+        try{
+            const {userId} = query;
+
+            let sql = `
+                SELECT pa.*
+                FROM packages pa
+                INNER JOIN programs pr ON pa.program_id = pr.id
+                INNER JOIN subscriptions s ON s.package_id = pa.id
+                INNER JOIN users u ON u.id = s.user_id
+                WHERE u.id = $1
+                AND  s."isActive" = true
+            `
+            const results = await AppDataSource.query(sql, [userId])
+    
+            return results;
+        } catch(err) {
+            console.log('err: ', err)
+            throw err;
+        }
+    }
+
 }

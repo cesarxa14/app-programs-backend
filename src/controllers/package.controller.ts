@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { Package } from '../entities/Package';
 import { AppDataSource } from "../ddbb/data-source";
+import { PackageLogic } from "../logic/package.logic";
 
+const packageLogic = new PackageLogic(AppDataSource)
 const createPackage = async(req: Request, res: Response) => {
 
     const { program, name, num_clases, expiration, cost, status, activeDays, activeHours } = req.body;
@@ -65,6 +67,17 @@ const getPackagesEnables = async(req: Request, res: Response) => {
     }
 }
 
+
+
+const getNumClassesByUser = async(req: Request, res: Response) => {
+    try{
+        const results = await packageLogic.getNumClassesByUser(req.query);
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
 const updatePackage = async(req: Request, res: Response) => {
     try{
         const {id} = req.params;
@@ -107,6 +120,7 @@ const deletePackage = async(req: Request, res: Response) => {
 export const PackageController = {
     getPackages,
     getPackagesEnables,
+    getNumClassesByUser,
     createPackage,
     updatePackage,
     deletePackage

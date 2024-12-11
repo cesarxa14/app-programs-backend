@@ -17,6 +17,9 @@ export class Subscription {
   @Column({nullable: false, type: 'timestamp'})
   endDate: Date;
 
+  @Column({nullable: false, type: 'boolean', default: true})
+  isActive: Date;
+
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' }) 
   user: User;

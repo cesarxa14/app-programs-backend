@@ -13,6 +13,10 @@ function PackageRoutes(app: Express){
     router.get('/enables',
         // [ verifyToken] ,
         PackageController.getPackagesEnables);
+        router.get('/getNumClassesByUser',
+            // [ verifyToken] ,
+            PackageController.getNumClassesByUser);
+        
     router.post('/', PackageController.createPackage);
     router.put('/:id', PackageController.updatePackage);
     router.delete('/:id', PackageController.deletePackage);

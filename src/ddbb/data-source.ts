@@ -9,6 +9,7 @@ import { Purchase } from "../entities/Purchase";
 import { Book } from "../entities/Book";
 import { Sale } from "../entities/Sale";
 import { Product } from "../entities/Product";
+import { Assist } from "../entities/Assists";
 
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 const options : DataSourceOptions= {
@@ -23,7 +24,7 @@ const options : DataSourceOptions= {
   synchronize: true,
 //logging logs sql command on the treminal
   logging: NODE_ENV === "dev" ? false : false,
-  entities: [User, Program,Package, Role, Subscription, Purchase, Book, Sale, Product], 
+  entities: [User, Program,Package, Role, Subscription, Purchase, Book, Sale, Product, Assist], 
 
   // migrations: [__dirname + "/migration/*.ts"],
   // subscribers: [],
