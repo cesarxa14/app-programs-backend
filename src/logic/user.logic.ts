@@ -14,6 +14,21 @@ export class UserLogic {
     this.dataSource = dataSource;
   }
 
+  async getUserById(id: number){
+    try {
+      const userFound = await AppDataSource.getRepository(User).findOne({
+        where: {
+          id: id
+        }
+      }); 
+
+      return userFound;
+    } catch (err) {
+      console.log('err: ', err);
+      throw err;
+    }
+  }
+
 
   async getUserByEmail(email: string){
     try {
@@ -33,7 +48,7 @@ export class UserLogic {
   async register(body: any){
     try {
 
-      const { name, lastname, email, role, password} = body;
+      const { name, lastname, email, role, password, createdBy} = body;
       const salt = await bcrypt.genSalt(10);
       const passwordEncrypt = await bcrypt.hash(password, salt)
       let newUser = new User();
@@ -43,6 +58,7 @@ export class UserLogic {
       newUser.email = email
       newUser.role = role
       newUser.password = passwordEncrypt
+      newUser.createdBy = createdBy
 
     const savedUser = await AppDataSource.getRepository(User).save(newUser);
 

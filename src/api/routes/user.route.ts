@@ -2,14 +2,14 @@ import {Router, Express} from "express"
 import { verifyToken } from "../../middlewares/verifyToken";
 const router = Router();
 // import {} from "../../controllers/package.controller"
-const {MyCustomerController} = require('../../controllers/my-customers.controller');
+const {UserController} = require('../../controllers/user.controller');
 
 function UserRoutes(app: Express){
-    app.use('/my-customers', router);
+    app.use('/users', router);
 
-    // router.get('/',
-    //     // [ verifyToken] ,
-    //     MyCustomerController.getMyCustomers);
+    router.get('/:id',
+        // [ verifyToken] ,
+        UserController.getUserById);
     // router.post('/', MyCustomerController.createMyCustomer);
     // router.put('/:id', MyCustomerController.updateMyCustomer);
     // router.delete('/:id', MyCustomerController.deleteCustomer);

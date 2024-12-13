@@ -10,6 +10,12 @@ function ProgramRoutes(app: Express){
     router.get('/',
         [ verifyToken] ,
         ProgramController.getPrograms);
+    router.get('/getProgramValidByUser',
+        [ verifyToken] ,
+        ProgramController.getProgramValidByUser);
+    router.get('/getProgramsBuyedByCustomer',
+        [ verifyToken] ,
+        ProgramController.getProgramsBuyedByCustomer);
     router.post('/', ProgramController.createProgram);
     router.put('/:id', ProgramController.updateProgram);
     router.delete('/:id', ProgramController.deleteProgram);

@@ -13,6 +13,20 @@ const getAssistsByUserPackages = async(req: Request, res: Response) => {
     }
 }
 
+const createAssist = async(req: Request, res: Response) => {
+    
+    try{
+        const body = req.body;
+
+        const result = await assistLogic.createAssist(body)
+        
+        res.status(201).json(result);
+    } catch(err) {
+        return res.status(400).json({message: err})
+    }
+}
+
 export const AssistController = {
-    getAssistsByUserPackages
+    getAssistsByUserPackages,
+    createAssist
 }

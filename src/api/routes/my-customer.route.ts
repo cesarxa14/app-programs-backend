@@ -10,6 +10,9 @@ function MyCustomerRoutes(app: Express){
     router.get('/',
         // [ verifyToken] ,
         MyCustomerController.getMyCustomers);
+    router.get('/search',
+        [ verifyToken] ,
+        MyCustomerController.getMyCustomersBySearch);
     router.post('/', MyCustomerController.createMyCustomer);
     router.put('/:id', MyCustomerController.updateMyCustomer);
     router.delete('/:id', MyCustomerController.deleteCustomer);

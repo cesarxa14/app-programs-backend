@@ -10,7 +10,7 @@ function AsssitRoutes(app: Express){
     router.get('/getAssistsByUserPackages',
         // [ verifyToken] ,
         AssistController.getAssistsByUserPackages);
-    // router.post('/', AssistController.createBook);
+    router.post('/', AssistController.createAssist);
     // router.put('/:id', BookController.updatePackage);
     // router.delete('/:id', BookController.deletePackage);
 }

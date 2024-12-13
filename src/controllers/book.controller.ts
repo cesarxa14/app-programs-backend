@@ -14,6 +14,26 @@ const getMyBooks = async(req: Request, res: Response) => {
     }
 }
 
+const getMyBooksAdmin = async(req: Request, res: Response) => {
+    try{
+        const query = req.query;
+        const results = await bookLogic.getMyBooksAdmin(query);
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
+const getMyBooksCustomer = async(req: Request, res: Response) => {
+    try{
+        const query = req.query;
+        const results = await bookLogic.getMyBooksCustomer(query);
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
 const createBook = async(req: Request, res: Response) => {
     
     try{
@@ -28,5 +48,7 @@ const createBook = async(req: Request, res: Response) => {
 }
 export const BookController = {
     getMyBooks,
-    createBook
+    createBook,
+    getMyBooksAdmin,
+    getMyBooksCustomer
 }

@@ -4,19 +4,25 @@ import { User } from "../entities/User";
 import * as bcrypt from "bcrypt"
 import * as jwt from 'jsonwebtoken';
 import { sendMail } from "../logic/logic_mailer";
+import { MyCustomerLogic } from "../logic/my-customer.logic";
+
+const myCustomerLogic = new MyCustomerLogic(AppDataSource)
 
 const getMyCustomers = async(req: Request, res: Response) => {
     try{
-        const whereConditions: any = { role: 3, deleted: 0 };
+        const results = await myCustomerLogic.getMyCustomers(req.query)
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
+const getMyCustomersBySearch = async(req: Request, res: Response) => {
+    try{
         console.log(req.query)
         
-        const results = await AppDataSource.getRepository(User).find({
-            where: whereConditions,
-            order: {
-                id: 'DESC'
-            },
+        const results = await myCustomerLogic.getMyCustomersBySearch(req.query)
 
-        });
         return res.json({data: results})
     } catch (err) {
         console.log('err: ', err)
@@ -26,7 +32,7 @@ const getMyCustomers = async(req: Request, res: Response) => {
 const createMyCustomer = async(req: Request, res: Response) => {
 
     console.log('body: ', req.body)
-    const { name, lastname, email, password, phone, country, province, district, type_document, document, birthdate, medical_history } = req.body;
+    const { createdBy, name, lastname, email, password, phone, country, province, district, type_document, document, birthdate, medical_history } = req.body;
     try{
 
         const salt = await bcrypt.genSalt(10);
@@ -46,6 +52,7 @@ const createMyCustomer = async(req: Request, res: Response) => {
         createUserMyCustomer.birthdate = birthdate;
         createUserMyCustomer.medical_history = medical_history;
         createUserMyCustomer.role = 3;
+        createUserMyCustomer.createdBy = createdBy || -1;
 
         const savedUserMyCustomer = await AppDataSource.getRepository(User).save(createUserMyCustomer);
 
@@ -125,6 +132,7 @@ const deleteCustomer = async(req: Request, res: Response) => {
 
 export const MyCustomerController = {
     getMyCustomers,
+    getMyCustomersBySearch,
     createMyCustomer,
     updateMyCustomer,
     deleteCustomer

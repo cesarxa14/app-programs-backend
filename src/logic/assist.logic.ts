@@ -38,21 +38,6 @@ export class AssistLogic {
             `
                 
             const results = await AppDataSource.query(sql, [userId])
-
-            // const results = await AppDataSource.getRepository(Assist)
-            // .createQueryBuilder('assist')
-            // // Relación con el asistente
-            // .innerJoinAndSelect('assist.assistant', 'assistant')
-            // // Relación con el estudiante
-            // .innerJoinAndSelect('assist.student', 'student')
-            // // Relación con el programa
-            // .innerJoinAndSelect('assist.program', 'program')
-            // // Relación con el paquete
-            // .innerJoinAndSelect('assist.package', 'package')
-            // // Opcional: Filtrado (por ejemplo, solo los activos)
-            // .where('student.id = :studentId', { userId })
-            // .andWhere('assist.deleted = :deleted', { deleted: 0 }) // Opcional: filtro adicional
-            // .getMany();
     
             return results;
         } catch(err) {
@@ -60,7 +45,7 @@ export class AssistLogic {
         }
       }
 
-    async createBook(body: any){
+    async createAssist(body: any){
 
         try {
           const { program, assistant, student, pack, classHour, additional_notes } = body;
@@ -74,19 +59,19 @@ export class AssistLogic {
             newAssist.assistant = assistant;
             newAssist.student = student;
             newAssist.package = pack;
-            newAssist.package = classHour;
-            newAssist.package = additional_notes;
+            newAssist.classHour = classHour
+            newAssist.additional_notes = additional_notes;
 
     
             const savedAssist = await AppDataSource.getRepository(Assist).save(newAssist);
     
-            const fullAssit = await AppDataSource.getRepository(Assist).findOne({
+            const fullAssist = await AppDataSource.getRepository(Assist).findOne({
                 where: { id: savedAssist.id },
               });
     
-            return fullAssit;
+            return fullAssist;
         } catch(err) {
-          console.log('err: ', err)
+          // console.log('err: ', err)
         }
     
       }

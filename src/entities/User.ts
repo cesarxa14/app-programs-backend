@@ -1,5 +1,5 @@
 // src/entities/Product.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({name: 'users'})
 export class User {
@@ -51,6 +51,9 @@ export class User {
 
   @Column({nullable: true, type: 'boolean', default: false})
   isVerified: boolean;
+
+  @Column({nullable: false, type: 'smallint', default: -1})
+  createdBy: number;
 
   @Column({nullable: false, type: 'smallint', default: 0})
   deleted: number;

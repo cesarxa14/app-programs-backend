@@ -1,7 +1,9 @@
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../ddbb/data-source";
 import { Book } from "../entities/Book";
+import { UserLogic } from "./user.logic";
 
+const userLogic = new UserLogic(AppDataSource)
 export class BookLogic {
 
   private dataSource;
@@ -27,6 +29,59 @@ export class BookLogic {
       return results;
     } catch(err) {
       console.log('error: ', err)
+    }
+  }
+
+  async getMyBooksAdmin(query: any){
+
+    try{
+      const {userId} = query;
+
+      const userFound = await userLogic.getUserById(userId);
+        
+      const results = await AppDataSource.getRepository(Book).find({
+        where: {
+          deleted: 0,
+          userCreator: {id: userFound.id}
+        },
+        order: {
+            id: 'DESC'
+        },
+        relations: ['userBooked', 'program'],
+
+      });
+
+      return results;
+    } catch(err) {
+      console.log('error: ', err)
+    }
+  }
+
+  async getMyBooksCustomer(query: any){
+
+    try{
+      console.log('query: ', query)
+      const {userId} = query;
+
+      const userFound = await userLogic.getUserById(userId);
+        
+      console.log('userFound: ', userFound)
+      const results = await AppDataSource.getRepository(Book).find({
+        where: {
+          deleted: 0,
+          userBooked: {id: userFound.id}
+        },
+        order: {
+            id: 'DESC'
+        },
+        relations: ['userBooked', 'program'],
+
+      });
+
+      return results;
+    } catch(err) {
+      console.log('error: ', err)
+      throw err;
     }
   }
 

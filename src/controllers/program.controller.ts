@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../ddbb/data-source";
 import { Program } from "../entities/Program";
 import { DataSource } from "typeorm";
+import { ProgramLogic } from "../logic/program.logic";
 
+const programLogic = new ProgramLogic(AppDataSource);
 const createProgram = async(req: Request, res: Response) => {
 
     const { user_id, name, description, startDate, endDate } = req.body;
@@ -36,6 +38,32 @@ const getPrograms = async(req: Request, res: Response) => {
         `
         params.push(Number(userId))
         const results = await AppDataSource.query(sql, params)
+        console.log('results:', results)
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
+
+
+const getProgramValidByUser = async(req: Request, res: Response) => {
+    try{ 
+        const {query} = req;
+    
+        const results = await programLogic.getProgramValidByUser(query);
+        console.log('results:', results)
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
+const getProgramsBuyedByCustomer = async(req: Request, res: Response) => {
+    try{ 
+        const {query} = req;
+    
+        const results = await programLogic.getProgramsBuyedByCustomer(query);
         console.log('results:', results)
         return res.json({data: results})
     } catch (err) {
@@ -81,8 +109,12 @@ const deleteProgram = async(req: Request, res: Response) => {
     }
 }
 
+
+
 export const ProgramController = {
     getPrograms,
+    getProgramsBuyedByCustomer,
+    getProgramValidByUser,
     createProgram,
     updateProgram,
     deleteProgram
