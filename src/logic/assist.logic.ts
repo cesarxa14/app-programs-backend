@@ -1,7 +1,9 @@
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../ddbb/data-source";
 import { Assist } from "../entities/Assists";
+import { PackageLogic } from "./package.logic";
 
+const packageLogic = new PackageLogic(AppDataSource);
 export class AssistLogic {
 
     private dataSource;
@@ -17,7 +19,8 @@ export class AssistLogic {
             const {userId} = query;
             let sql = `
                     SELECT 
-                        assist.created_at AS assistDate, 
+                        assist.created_at AS assistDate,
+                        assist."classHour" AS classHour, 
                         CONCAT(assistant.name, ' ', assistant.lastname) AS instructor,
                         CONCAT(student.name, ' ', student.lastname) AS student, 
                         program.name AS program_name
@@ -49,8 +52,20 @@ export class AssistLogic {
 
         try {
           const { program, assistant, student, pack, classHour, additional_notes } = body;
-    
+          
 
+          const resultAssist = await this.getAssistsByUserPackages({userId: student});
+
+          const numberAssist = resultAssist.length;
+          const numClasesResult = await packageLogic.getNumClassesByUser({userId: student});
+
+          const numClases = numClasesResult[0].num_clases;
+
+          if(numberAssist >= numClases){
+            throw new Error("Usuario ya no tiene clases disponibles")
+          }
+          console.log('resultAssist: ', resultAssist);
+          console.log('numClases', numClases)
     
           // const userWithPackage = await logi
           console.log('body:', body)
@@ -71,7 +86,8 @@ export class AssistLogic {
     
             return fullAssist;
         } catch(err) {
-          // console.log('err: ', err)
+          console.log('err: ', err)
+          throw err;
         }
     
       }

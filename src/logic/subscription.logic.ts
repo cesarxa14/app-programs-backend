@@ -100,5 +100,26 @@ export class SubscriptionLogic {
             throw err;
         }
     }
+
+    async extendSubscription(id: string, payload:any){
+        try {
+             // Buscar la entidad por ID
+            const subscriptionToUpdate = await AppDataSource.getRepository(Subscription).findOneBy({ id: Number(id) });
+
+            if (!subscriptionToUpdate) {
+                throw new Error('Subscription not found')
+            }
+
+            subscriptionToUpdate.endDate = payload.endDate;
+
+            const updatedSubscription = await AppDataSource.getRepository(Subscription).save(subscriptionToUpdate);
+            return updatedSubscription;
+        } catch (err) {
+            console.log('err: ', err)
+            throw err;
+        }
+    }
+
+    
 }
   

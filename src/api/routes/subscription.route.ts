@@ -13,7 +13,7 @@ function SubscriptionRoutes(app: Express){
         // [ verifyToken] ,
         SubscriptionController.getSubscriptionValidByUser);
     router.post('/', SubscriptionController.createSubscription);
-    // router.put('/:id', PackageController.updatePackage);
+    router.put('/extendSubscription/:id', SubscriptionController.extendSubscription);
     // router.delete('/:id', PackageController.deletePackage);
 }
 

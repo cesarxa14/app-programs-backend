@@ -43,7 +43,9 @@ const createBook = async(req: Request, res: Response) => {
         
         res.status(201).json(result);
     } catch(err) {
-        return res.status(400).json({message: err})
+        return res.status(500).json({
+            message: err instanceof Error ? err.message : 'Error interno del servidor'
+        })
     }
 }
 export const BookController = {

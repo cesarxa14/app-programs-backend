@@ -39,9 +39,24 @@ const getSubscriptionValidByUser = async(req: Request, res: Response) => {
   }
 }
 
+const extendSubscription = async(req: Request, res: Response) => {
+  try{ 
+      const {id} = req.params;
+      const {body} = req
+      
+      const result = await subscriptionLogic.extendSubscription(id, body);
+      console.log('result:', result)
+      return res.json({data: result})
+  } catch (err) {
+      console.log('err: ', err)
+      throw err;
+  }
+}
+
 
 export const SubscriptionController = {
   createSubscription,
   getSubscriptionByUser,
-  getSubscriptionValidByUser
+  getSubscriptionValidByUser,
+  extendSubscription
 };
