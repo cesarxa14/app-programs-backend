@@ -12,6 +12,52 @@ export class AssistLogic {
       this.dataSource = dataSource;
     }
 
+    async getAssistByAdmin(query: any) {
+      try{
+        const {userId} = query;
+          let sql = `
+               SELECT a.*, pr.name AS program_name, pa.name AS package_name
+                FROM assists a
+                INNER JOIN programs pr ON a.program_id = pr.id
+                INNER JOIN packages pa ON a.package_id = pa.id
+                WHERE a.assistant_id = $1
+                AND a.deleted = 0
+                ORDER BY a.id DESC;       
+                       
+        `
+            
+        const results = await AppDataSource.query(sql, [userId])
+
+        return results;
+      } catch(err) {
+        console.log('err: ', err)
+        throw err;
+      }
+    }
+
+    async getAssistByCustomer(query: any) {
+      try{
+        const {userId} = query;
+          let sql = `
+               SELECT a.*, pr.name AS program_name, pa.name AS package_name
+                FROM assists a
+                INNER JOIN programs pr ON a.program_id = pr.id
+                INNER JOIN packages pa ON a.package_id = pa.id
+                WHERE a.student_id = $1
+                AND a.deleted = 0
+                ORDER BY a.id DESC;    
+                       
+        `
+            
+        const results = await AppDataSource.query(sql, [userId])
+
+        return results;
+      } catch(err) {
+        console.log('err: ', err)
+        throw err;
+      }
+    }
+
     async getAssistsByUserPackages(query: any){
 
         try{
@@ -27,7 +73,7 @@ export class AssistLogic {
                     FROM 
                         assists assist
                     INNER JOIN 
-                        users assistant ON assist.assistant_id = assistant.id
+                        users assistant ON assist.assistant_id = users.id
                     INNER JOIN 
                         users student ON assist.student_id = student.id
                     INNER JOIN 

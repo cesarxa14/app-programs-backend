@@ -7,6 +7,14 @@ const {AssistController} = require('../../controllers/assist.controller');
 function AsssitRoutes(app: Express){
     app.use('/assists', router);
 
+    router.get('/byAdmin',
+        [ verifyToken] ,
+        AssistController.getAssistByAdmin);
+
+    router.get('/byCustomer',
+        [ verifyToken] ,
+        AssistController.getAssistByCustomer);
+
     router.get('/getAssistsByUserPackages',
         // [ verifyToken] ,
         AssistController.getAssistsByUserPackages);

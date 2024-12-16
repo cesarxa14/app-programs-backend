@@ -4,6 +4,24 @@ import { AssistLogic } from "../logic/assist.logic";
 
 const assistLogic = new AssistLogic(AppDataSource)
 
+const getAssistByAdmin = async(req: Request, res: Response) => {
+    try{
+        const results = await assistLogic.getAssistByAdmin(req.query);
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
+const getAssistByCustomer = async(req: Request, res: Response) => {
+    try{
+        const results = await assistLogic.getAssistByCustomer(req.query);
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
 const getAssistsByUserPackages = async(req: Request, res: Response) => {
     try{
         const results = await assistLogic.getAssistsByUserPackages(req.query);
@@ -31,6 +49,8 @@ const createAssist = async(req: Request, res: Response) => {
 }
 
 export const AssistController = {
+    getAssistByAdmin,
+    getAssistByCustomer,
     getAssistsByUserPackages,
     createAssist
 }
