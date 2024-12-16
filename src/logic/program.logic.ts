@@ -40,6 +40,7 @@ export class ProgramLogic {
                         INNER JOIN packages p ON p.id = s.package_id
                         INNER JOIN programs pr ON pr.id = p.program_id
                         WHERE s.user_id = $1
+                        AND s."isActive" = true
                         AND p.deleted = 0
                         AND s."endDate" > NOW();
                 `
