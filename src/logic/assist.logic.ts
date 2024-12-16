@@ -73,7 +73,7 @@ export class AssistLogic {
                     FROM 
                         assists assist
                     INNER JOIN 
-                        users assistant ON assist.assistant_id = users.id
+                        users assistant ON assist.assistant_id = assistant.id
                     INNER JOIN 
                         users student ON assist.student_id = student.id
                     INNER JOIN 
