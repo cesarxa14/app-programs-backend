@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../ddbb/data-source";
 import { Assist } from "../entities/Assists";
 import { PackageLogic } from "./package.logic";
+import { Subscription } from "../entities/Subscription";
 
 const packageLogic = new PackageLogic(AppDataSource);
 export class AssistLogic {
@@ -97,16 +98,12 @@ export class AssistLogic {
     async createAssist(body: any){
 
         try {
+
           const { program, assistant, student, pack, classHour, additional_notes } = body;
-          
-
           const resultAssist = await this.getAssistsByUserPackages({userId: student});
-
           const numberAssist = resultAssist.length;
           const numClasesResult = await packageLogic.getNumClassesByUser({userId: student});
-
           const numClases = numClasesResult[0].num_clases;
-
           if(numberAssist >= numClases){
             throw new Error("Usuario ya no tiene clases disponibles")
           }
@@ -123,12 +120,26 @@ export class AssistLogic {
             newAssist.classHour = classHour
             newAssist.additional_notes = additional_notes;
 
-    
             const savedAssist = await AppDataSource.getRepository(Assist).save(newAssist);
     
             const fullAssist = await AppDataSource.getRepository(Assist).findOne({
                 where: { id: savedAssist.id },
               });
+
+            // SI YA ES LA ULTIMA ASISTENCIA DISPONIBLE REGISTRADA, LO INACTIVAMOS
+            if(numberAssist == numClases - 1 ){
+              
+              const subscriptionFound = await AppDataSource.getRepository(Subscription).findOne({
+                where: {
+                  service: fullAssist.package,
+                  user: fullAssist.student
+                }
+              })
+              subscriptionFound.isActive = false;
+              await AppDataSource.getRepository(Subscription).save(subscriptionFound)
+              console.log('Subscription updated successfully')
+
+            }
     
             return fullAssist;
         } catch(err) {
