@@ -79,6 +79,7 @@ export class UserLogic {
     return {savedUser, token}
     } catch (err) {
       console.log('error: ', err)
+      throw err;
     }
   }
 

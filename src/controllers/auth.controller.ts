@@ -72,13 +72,17 @@ const register = async (req: Request, res: Response) => {
 const completeRegister = async (req: Request, res: Response) => {
   try{
 
-    const { id, phone, country, province, district, type_document, document, birthdate, medical_history} = req.body;
+    const { userId, phone, country, province, district, type_document, document, birthdate, medical_history, gender} = req.body;
 
     const userFound  = await AppDataSource.getRepository(User).findOne({
       where: {
-        id: id
+        id: userId
       }
     }); 
+
+    if(!userFound) throw new Error("User not found")
+
+    console.log({ userId, phone, country, province, district, type_document, document, birthdate, medical_history, gender})
 
     userFound.phone = phone
     userFound.country = country
@@ -86,6 +90,7 @@ const completeRegister = async (req: Request, res: Response) => {
     userFound.district = district
     userFound.type_document = type_document
     userFound.document = document
+    userFound.gender = gender
     userFound.birthdate = birthdate
     userFound.medical_history = medical_history
     userFound.isVerified = true;

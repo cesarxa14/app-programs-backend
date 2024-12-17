@@ -3,8 +3,11 @@ import { AppDataSource } from "../ddbb/data-source";
 import { Assist } from "../entities/Assists";
 import { PackageLogic } from "./package.logic";
 import { Subscription } from "../entities/Subscription";
+import { sendMail } from "./logic_mailer";
+import { UserLogic } from "./user.logic";
 
 const packageLogic = new PackageLogic(AppDataSource);
+const userLogic = new UserLogic(AppDataSource);
 export class AssistLogic {
 
     private dataSource;
@@ -84,6 +87,7 @@ export class AssistLogic {
                     WHERE 
                         student.id = $1
                         AND assist.deleted = 0
+                    ORDER BY assist.id DESC
                        
             `
                 
@@ -147,6 +151,32 @@ export class AssistLogic {
           throw err;
         }
     
+      }
+
+      async sendReminder(body: any){
+        try{
+    
+          const {studentId} = body;
+    
+          const studentFound = await userLogic.getUserById(studentId);
+    
+          if(!studentFound) throw new Error('Student not found')
+    
+          const bodyHTML = `
+            <div>
+                <h1>Subscripcion a punto de vencer!</h1>
+                <p>
+                    Hola ${studentFound.name}, tienes una clase pendiente, comentanos si deseas renovar.
+                </p>
+            </div>
+        `
+    
+        await sendMail('cetolara06@gmail.com', 'Recordatorio de Subscripcion', 'Por vencer', bodyHTML)
+        return true;
+        } catch(err) {
+          console.log('err: ', err)
+          throw err;
+        }
       }
 
 }
