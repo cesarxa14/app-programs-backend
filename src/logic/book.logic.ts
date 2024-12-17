@@ -163,7 +163,8 @@ export class BookLogic {
           });
 
           // TODO: pasar a una variable en una carpeta de bodyHTML
-          let bodyHTML = `
+          /*
+          let bodyHTML2 = `
           <div>
             <h1>Se registro su reserva para el programa <b>${program.name}</b></h1>
             <p>Fecha: <b>${classDate}</b></p>
@@ -171,11 +172,38 @@ export class BookLogic {
             
         `
         if(additional_notes || additional_notes != ''){
-          bodyHTML += `<p>Notas: <b>${additional_notes}</b></p> `
+          bodyHTML2 += `<p>Notas: <b>${additional_notes}</b></p> `
         }
         body += `</div>`
+          */
 
-    await sendMail(fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHTML)
+        let bodyHTML = `
+        <div style="font-family: Arial, sans-serif; color: #000000; padding: 20px; max-width: 600px; margin: auto;">
+            <div style="text-align: center;">
+                <img src="https://copiloto.sigties.com/files/project_files/21/_file67605e200f519-logook.png" alt="Nadar es Vida" style="max-width: 200px;"/>
+            </div>
+            <h1 style="color: #2fa3ce; text-align: center;">Se registro su reserva para el programa <b>${program.name}</b></h1>
+            <p style="font-size: 16px; line-height: 1.5;">Fecha: <b>${classDate}</b></p>
+            <p style="font-size: 16px; line-height: 1.5;">Hora: <b>${classHour}</b></p>
+            ${additional_notes ? `<p style="font-size: 16px; line-height: 1.5;">Notas: <b>${additional_notes}</b></p>` : ''}
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://www.example.com/confirmar-reserva" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #e89a28; text-decoration: none; border-radius: 5px; border: 2px solid #e89a28; transition: background-color 0.3s ease;">
+                    Confirmar Reserva
+                </a>
+            </div>
+            <p style="text-align: center; font-size: 14px; color: #555555; margin-top: 20px;">Gracias por elegir Nadar es Vida. ¡Nos vemos en el mar!</p>
+        </div>
+    `;
+    
+    await sendMail(fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHTML);
+    // await sendMail('cetolara06@gmail.com', 'Registro de reserva', 'Holas', bodyHTML);
+    
+
+await sendMail(fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHTML);
+// await sendMail('cetolara06@gmail.com', 'Registro de reserva', 'Holas', bodyHTML);
+
+
+    
     // await sendMail('cetolara06@gmail.com', 'Registro de reserva', 'Holas', bodyHTML)
 
         return fullBook;
