@@ -17,19 +17,23 @@ export class BookLogic {
     this.dataSource = dataSource;
   }
 
-  async getMyBooks(){
+  async getMyBooks(query: any){
 
     try{
+      console.log('query', query)
       const whereConditions: any = { deleted: 0 };
-        
-      const results = await AppDataSource.getRepository(Book).find({
+      
+      const queryOptions: any = {
         where: whereConditions,
         order: {
             id: 'DESC'
         },
-        relations: ['userBooked', 'program'],
-
-      });
+        relations: ['userBooked', 'program']
+      };
+      if(query.limit){
+        queryOptions.take =  10 
+      }
+      const results = await AppDataSource.getRepository(Book).find(queryOptions);
 
       return results;
     } catch(err) {
@@ -213,6 +217,8 @@ await sendMail(fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHT
     }
 
   }
+
+ 
 
 
 }

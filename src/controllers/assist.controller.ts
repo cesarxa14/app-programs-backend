@@ -48,9 +48,23 @@ const createAssist = async(req: Request, res: Response) => {
     }
 }
 
+const sendReminder = async(req: Request, res: Response) => {
+    
+    try{
+        const body = req.body;
+        await assistLogic.sendReminder(body)
+        res.status(201).json({message: 'Se envió el recordario con éxito'});
+    } catch(err) {
+        return res.status(500).json({
+            message: err instanceof Error ? err.message : 'Error interno del servidor'
+        })
+    }
+}
+
 export const AssistController = {
     getAssistByAdmin,
     getAssistByCustomer,
     getAssistsByUserPackages,
-    createAssist
+    createAssist,
+    sendReminder
 }

@@ -19,6 +19,8 @@ function AsssitRoutes(app: Express){
         // [ verifyToken] ,
         AssistController.getAssistsByUserPackages);
     router.post('/', AssistController.createAssist);
+    
+    router.post('/sendReminder', AssistController.sendReminder);
     // router.put('/:id', BookController.updatePackage);
     // router.delete('/:id', BookController.deletePackage);
 }

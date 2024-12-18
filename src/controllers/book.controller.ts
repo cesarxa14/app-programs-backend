@@ -7,7 +7,8 @@ const bookLogic = new BookLogic(AppDataSource)
 
 const getMyBooks = async(req: Request, res: Response) => {
     try{
-        const results = await bookLogic.getMyBooks();
+        const {query} = req
+        const results = await bookLogic.getMyBooks(query);
         return res.json({data: results})
     } catch (err) {
         console.log('err: ', err)
@@ -48,9 +49,13 @@ const createBook = async(req: Request, res: Response) => {
         })
     }
 }
+
+
+
 export const BookController = {
     getMyBooks,
     createBook,
     getMyBooksAdmin,
-    getMyBooksCustomer
+    getMyBooksCustomer,
+    
 }

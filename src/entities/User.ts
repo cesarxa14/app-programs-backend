@@ -44,6 +44,9 @@ export class User {
   document: string;
 
   @Column({nullable: true, type: 'varchar'})
+  gender: string;
+
+  @Column({nullable: true, type: 'varchar'})
   birthdate: string;
 
   @Column({nullable: true, type: 'varchar'})
