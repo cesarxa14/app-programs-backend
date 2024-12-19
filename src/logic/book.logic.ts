@@ -5,6 +5,7 @@ import { UserLogic } from "./user.logic";
 import { sendMail } from "./logic_mailer";
 import { AssistLogic } from "./assist.logic";
 import { PackageLogic } from "./package.logic";
+import config  from '../config/mail.config';
 
 const userLogic = new UserLogic(AppDataSource)
 const assistLogic = new AssistLogic(AppDataSource)
@@ -191,7 +192,7 @@ export class BookLogic {
             <p style="font-size: 16px; line-height: 1.5;">Hora: <b>${classHour}</b></p>
             ${additional_notes ? `<p style="font-size: 16px; line-height: 1.5;">Notas: <b>${additional_notes}</b></p>` : ''}
             <div style="text-align: center; margin-top: 20px;">
-                <a href="https://www.example.com/confirmar-reserva" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #e89a28; text-decoration: none; border-radius: 5px; border: 2px solid #e89a28; transition: background-color 0.3s ease;">
+                <a href="https://wa.link/bbv21m" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #e89a28; text-decoration: none; border-radius: 5px; border: 2px solid #e89a28; transition: background-color 0.3s ease;">
                     Confirmar Reserva
                 </a>
             </div>
@@ -199,11 +200,11 @@ export class BookLogic {
         </div>
     `;
     
-    await sendMail(fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHTML);
+    await sendMail(config.email,fullBook.userBooked.email, config.subjects.reserva, 'Holas', bodyHTML);
     // await sendMail('cetolara06@gmail.com', 'Registro de reserva', 'Holas', bodyHTML);
     
 
-await sendMail(fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHTML);
+//await sendMail(config.email,fullBook.userBooked.email, 'Registro de reserva', 'Holas', bodyHTML);
 // await sendMail('cetolara06@gmail.com', 'Registro de reserva', 'Holas', bodyHTML);
 
 

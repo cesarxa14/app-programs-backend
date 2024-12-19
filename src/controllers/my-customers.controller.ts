@@ -5,6 +5,7 @@ import * as bcrypt from "bcrypt"
 import * as jwt from 'jsonwebtoken';
 import { sendMail } from "../logic/logic_mailer";
 import { MyCustomerLogic } from "../logic/my-customer.logic";
+import config  from '../config/mail.config';
 
 const myCustomerLogic = new MyCustomerLogic(AppDataSource)
 
@@ -71,7 +72,7 @@ const createMyCustomer = async(req: Request, res: Response) => {
             </div>
         `
 
-        const sendEmail = await sendMail(createUserMyCustomer.email, 'Registro Existoso', 'Holas', bodyHTML)
+        const sendEmail = await sendMail(config.email,createUserMyCustomer.email, config.subjects.registro, 'Holas', bodyHTML)
 
         
         console.log('sendEmail: ', sendEmail)

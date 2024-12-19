@@ -24,7 +24,10 @@ export class SaleLogic {
                 where: {
                   seller: selledId
                 },
-                relations: ["customer"]
+                relations: ["customer"],
+                order:{
+                    saleDate:"DESC"
+                }
               }); 
 
             return results;

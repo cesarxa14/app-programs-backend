@@ -5,21 +5,22 @@ import { PackageLogic } from "./package.logic";
 import { Subscription } from "../entities/Subscription";
 import { sendMail } from "./logic_mailer";
 import { UserLogic } from "./user.logic";
+import config  from '../config/mail.config';
 
 const packageLogic = new PackageLogic(AppDataSource);
 const userLogic = new UserLogic(AppDataSource);
 export class AssistLogic {
 
-    private dataSource;
-    constructor(dataSource: DataSource){
-      dataSource = AppDataSource;
-      this.dataSource = dataSource;
-    }
+  private dataSource;
+  constructor(dataSource: DataSource) {
+    dataSource = AppDataSource;
+    this.dataSource = dataSource;
+  }
 
-    async getAssistByAdmin(query: any) {
-      try{
-        const {userId} = query;
-          let sql = `
+  async getAssistByAdmin(query: any) {
+    try {
+      const { userId } = query;
+      let sql = `
                SELECT a.*, pr.name AS program_name, pa.name AS package_name
                 FROM assists a
                 INNER JOIN programs pr ON a.program_id = pr.id
@@ -29,20 +30,20 @@ export class AssistLogic {
                 ORDER BY a.id DESC;       
                        
         `
-            
-        const results = await AppDataSource.query(sql, [userId])
 
-        return results;
-      } catch(err) {
-        console.log('err: ', err)
-        throw err;
-      }
+      const results = await AppDataSource.query(sql, [userId])
+
+      return results;
+    } catch (err) {
+      console.log('err: ', err)
+      throw err;
     }
+  }
 
-    async getAssistByCustomer(query: any) {
-      try{
-        const {userId} = query;
-          let sql = `
+  async getAssistByCustomer(query: any) {
+    try {
+      const { userId } = query;
+      let sql = `
                SELECT a.*, pr.name AS program_name, pa.name AS package_name
                 FROM assists a
                 INNER JOIN programs pr ON a.program_id = pr.id
@@ -52,22 +53,22 @@ export class AssistLogic {
                 ORDER BY a.id DESC;    
                        
         `
-            
-        const results = await AppDataSource.query(sql, [userId])
 
-        return results;
-      } catch(err) {
-        console.log('err: ', err)
-        throw err;
-      }
+      const results = await AppDataSource.query(sql, [userId])
+
+      return results;
+    } catch (err) {
+      console.log('err: ', err)
+      throw err;
     }
+  }
 
-    async getAssistsByUserPackages(query: any){
+  async getAssistsByUserPackages(query: any) {
 
-        try{
-          
-            const {userId} = query;
-            let sql = `
+    try {
+
+      const { userId } = query;
+      let sql = `
                     SELECT 
                         assist.created_at AS assistDate,
                         assist."classHour" AS classHour, 
@@ -90,93 +91,116 @@ export class AssistLogic {
                     ORDER BY assist.id DESC
                        
             `
-                
-            const results = await AppDataSource.query(sql, [userId])
-    
-            return results;
-        } catch(err) {
-          console.log('error: ', err)
-        }
+
+      const results = await AppDataSource.query(sql, [userId])
+
+      return results;
+    } catch (err) {
+      console.log('error: ', err)
+    }
+  }
+
+  async createAssist(body: any) {
+
+    try {
+
+      const { program, assistant, student, pack, classHour, additional_notes } = body;
+      const resultAssist = await this.getAssistsByUserPackages({ userId: student });
+      const numberAssist = resultAssist.length;
+      const numClasesResult = await packageLogic.getNumClassesByUser({ userId: student });
+      const numClases = numClasesResult[0].num_clases;
+      if (numberAssist >= numClases) {
+        throw new Error("Usuario ya no tiene clases disponibles")
       }
+      console.log('resultAssist: ', resultAssist);
+      console.log('numClases', numClases)
 
-    async createAssist(body: any){
+      // const userWithPackage = await logi
+      console.log('body:', body)
+      let newAssist = new Assist();
+      newAssist.program = program;
+      newAssist.assistant = assistant;
+      newAssist.student = student;
+      newAssist.package = pack;
+      newAssist.classHour = classHour
+      newAssist.additional_notes = additional_notes;
 
-        try {
+      const savedAssist = await AppDataSource.getRepository(Assist).save(newAssist);
 
-          const { program, assistant, student, pack, classHour, additional_notes } = body;
-          const resultAssist = await this.getAssistsByUserPackages({userId: student});
-          const numberAssist = resultAssist.length;
-          const numClasesResult = await packageLogic.getNumClassesByUser({userId: student});
-          const numClases = numClasesResult[0].num_clases;
-          if(numberAssist >= numClases){
-            throw new Error("Usuario ya no tiene clases disponibles")
+      const fullAssist = await AppDataSource.getRepository(Assist).findOne({
+        where: { id: savedAssist.id },
+      });
+
+      // SI YA ES LA ULTIMA ASISTENCIA DISPONIBLE REGISTRADA, LO INACTIVAMOS
+      if (numberAssist == numClases - 1) {
+
+        const subscriptionFound = await AppDataSource.getRepository(Subscription).findOne({
+          where: {
+            service: fullAssist.package,
+            user: fullAssist.student
           }
-          console.log('resultAssist: ', resultAssist);
-          console.log('numClases', numClases)
-    
-          // const userWithPackage = await logi
-          console.log('body:', body)
-            let newAssist = new Assist();
-            newAssist.program = program;
-            newAssist.assistant = assistant;
-            newAssist.student = student;
-            newAssist.package = pack;
-            newAssist.classHour = classHour
-            newAssist.additional_notes = additional_notes;
+        })
+        subscriptionFound.isActive = false;
+        await AppDataSource.getRepository(Subscription).save(subscriptionFound)
+        console.log('Subscription updated successfully')
 
-            const savedAssist = await AppDataSource.getRepository(Assist).save(newAssist);
-    
-            const fullAssist = await AppDataSource.getRepository(Assist).findOne({
-                where: { id: savedAssist.id },
-              });
-
-            // SI YA ES LA ULTIMA ASISTENCIA DISPONIBLE REGISTRADA, LO INACTIVAMOS
-            if(numberAssist == numClases - 1 ){
-              
-              const subscriptionFound = await AppDataSource.getRepository(Subscription).findOne({
-                where: {
-                  service: fullAssist.package,
-                  user: fullAssist.student
-                }
-              })
-              subscriptionFound.isActive = false;
-              await AppDataSource.getRepository(Subscription).save(subscriptionFound)
-              console.log('Subscription updated successfully')
-
-            }
-    
-            return fullAssist;
-        } catch(err) {
-          console.log('err: ', err)
-          throw err;
-        }
-    
       }
 
-      async sendReminder(body: any){
-        try{
-    
-          const {studentId} = body;
-    
-          const studentFound = await userLogic.getUserById(studentId);
-    
-          if(!studentFound) throw new Error('Student not found')
-    
-          const bodyHTML = `
+      return fullAssist;
+    } catch (err) {
+      console.log('err: ', err)
+      throw err;
+    }
+
+  }
+
+  async sendReminder(body: any) {
+    try {
+
+      const { studentId } = body;
+
+      const studentFound = await userLogic.getUserById(studentId);
+
+      if (!studentFound) throw new Error('Student not found')
+
+      const bodyHTML1 = `
             <div>
                 <h1>Subscripcion a punto de vencer!</h1>
                 <p>
                     Hola ${studentFound.name}, tienes una clase pendiente, comentanos si deseas renovar.
                 </p>
             </div>
-        `
-    
-        await sendMail('cetolara06@gmail.com', 'Recordatorio de Subscripcion', 'Por vencer', bodyHTML)
-        return true;
-        } catch(err) {
-          console.log('err: ', err)
-          throw err;
-        }
-      }
+        `;
+
+      const bodyHTML = `
+<div style="font-family: Arial, sans-serif; color: #000000; padding: 20px; max-width: 600px; margin: auto;">
+    <div style="text-align: center;">
+        <img src="https://copiloto.sigties.com/files/project_files/21/_file67605e200f519-logook.png" alt="Nadar es Vida" style="max-width: 200px;"/>
+    </div>
+    <h1 style="color: #2fa3ce; text-align: center;">Subscripción a punto de vencer!</h1>
+    <p style="font-size: 16px; line-height: 1.5;">
+        Hola ${studentFound.name}, tienes una clase pendiente, coméntanos si deseas renovar.
+    </p>
+<div style="text-align: center; margin-top: 20px;">
+    <a href="https://wa.link/bbv21m" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #4CAF50; text-decoration: none; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;"
+       onmouseover="this.style.backgroundColor='#45a049';" 
+       onmouseout="this.style.backgroundColor='#4CAF50';" 
+       onmousedown="this.style.backgroundColor='#3e8e41';" 
+       onmouseup="this.style.backgroundColor='#45a049';">
+       Renovar Subscripción
+    </a>
+</div>
+    <p style="text-align: center; font-size: 14px; color: #555555; margin-top: 20px;">Gracias por elegir Nadar es Vida. ¡Nos vemos en el mar!</p>
+</div>
+`;
+
+
+      await sendMail(config.email,studentFound.email, config.subjects.reminder, 'Por vencer', bodyHTML)
+      return true;
+    } catch (err) {
+      console.log('err: ', err)
+      throw err;
+    }
+  }
 
 }

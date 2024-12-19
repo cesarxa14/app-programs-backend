@@ -12,7 +12,8 @@ app.use(cors())
 
 app.use(morgan('dev'));
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 
 //Agregamos handler para recibir json
 app.use(express.json());
