@@ -14,10 +14,10 @@ import { Assist } from "../entities/Assists";
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 const options : DataSourceOptions= {
   type: "postgres",
-  host: DB_HOST || '192.168.100.138',
-  port: parseInt(DB_PORT || "5432"),
+  host: DB_HOST || 'localhost',
+  port: parseInt(DB_PORT || "5433"),
   username: DB_USERNAME || 'postgres',
-  password: DB_PASSWORD || 'admin',
+  password: DB_PASSWORD || 'chelseafc11',
   database: DB_DATABASE || 'app-programas',
 
   // synchronize: NODE_ENV === "dev" ? false : false,

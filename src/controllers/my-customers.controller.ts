@@ -33,7 +33,7 @@ const getMyCustomersBySearch = async(req: Request, res: Response) => {
 const createMyCustomer = async(req: Request, res: Response) => {
 
     console.log('body: ', req.body)
-    const { createdBy, name, lastname, email, password, phone, country, province, district, type_document, document, birthdate, medical_history } = req.body;
+    const { createdBy, name, lastname, email, password, phone, country, department, province, district, type_document, document, birthdate, medical_history } = req.body;
     try{
 
         const salt = await bcrypt.genSalt(10);
@@ -46,6 +46,7 @@ const createMyCustomer = async(req: Request, res: Response) => {
         createUserMyCustomer.password = passwordEncrypt;
         createUserMyCustomer.phone = phone;
         createUserMyCustomer.country = country;
+        createUserMyCustomer.department = department;
         createUserMyCustomer.province = province;
         createUserMyCustomer.district = district;
         createUserMyCustomer.type_document = type_document;

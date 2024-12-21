@@ -60,6 +60,8 @@ export class UserLogic {
       newUser.password = passwordEncrypt
       newUser.createdBy = createdBy
 
+      
+
     const savedUser = await AppDataSource.getRepository(User).save(newUser);
 
     const token = jwt.sign({id: savedUser.id}, process.env.JWT_SECRET_KEY , {expiresIn: 30}); 
@@ -74,7 +76,9 @@ export class UserLogic {
         </div>
     `
 
-    const sendEmail = await sendMail(newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
+    console.log('savedUser', savedUser)
+
+    const sendEmail = await sendMail('cetolara06@gmail.com', newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
 
     return {savedUser, token}
     } catch (err) {

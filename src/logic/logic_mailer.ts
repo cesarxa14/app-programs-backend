@@ -30,7 +30,7 @@ const transportOptions = {
 };
 
 
-const transporter: Transporter = nodemailer.createTransport(transportOptions,{
+const transporter: Transporter = nodemailer.createTransport(transportOptions1,{
   logger: true, // Log detail during connection
   debug: true   // Log SMTP traffic
 });

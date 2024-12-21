@@ -35,7 +35,7 @@ export class User {
 
 
   @Column({nullable: true, type: 'varchar'})
-  address: string;
+  department: string;
 
   @Column({nullable: true, type: 'varchar'})
   type_document: string;

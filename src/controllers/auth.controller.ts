@@ -72,7 +72,7 @@ const register = async (req: Request, res: Response) => {
 const completeRegister = async (req: Request, res: Response) => {
   try{
 
-    const { userId, phone, country, province, district, type_document, document, birthdate, medical_history, gender} = req.body;
+    const { userId, phone, country, province, department, district, type_document, document, birthdate, medical_history, gender} = req.body;
 
     const userFound  = await AppDataSource.getRepository(User).findOne({
       where: {
@@ -90,6 +90,7 @@ const completeRegister = async (req: Request, res: Response) => {
     userFound.district = district
     userFound.type_document = type_document
     userFound.document = document
+    userFound.department = department;
     userFound.gender = gender
     userFound.birthdate = birthdate
     userFound.medical_history = medical_history
