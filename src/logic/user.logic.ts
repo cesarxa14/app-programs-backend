@@ -78,7 +78,7 @@ export class UserLogic {
 
     console.log('savedUser', savedUser)
 
-    const sendEmail = await sendMail('cetolara06@gmail.com', newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
+    const sendEmail = await sendMail(newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
 
     return {savedUser, token}
     } catch (err) {
