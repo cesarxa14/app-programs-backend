@@ -15,10 +15,10 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = pr
 const options : DataSourceOptions= {
   type: "postgres",
   host: DB_HOST || 'localhost',
-  port: parseInt(DB_PORT || "5433"),
-  username: DB_USERNAME || 'postgres',
-  password: DB_PASSWORD || 'chelseafc11',
-  database: DB_DATABASE || 'app-programas',
+  port: parseInt(DB_PORT || "5432"),
+  username: DB_USERNAME || 'nadar_user',
+  password: DB_PASSWORD || '$naD4r,.*v1da',
+  database: DB_DATABASE || 'nadardb',
 
   // synchronize: NODE_ENV === "dev" ? false : false,
   synchronize: true,
