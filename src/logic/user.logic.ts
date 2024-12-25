@@ -4,6 +4,7 @@ import { User } from "../entities/User";
 import * as bcrypt from "bcrypt"
 import * as jwt from 'jsonwebtoken';
 import { sendMail } from "../logic/logic_mailer";
+import config  from '../config/mail.config';
 
 
 export class UserLogic {
@@ -80,7 +81,9 @@ export class UserLogic {
 
     console.log('savedUser', savedUser)
 
-    const sendEmail = await sendMail(newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
+    //const sendEmail = await sendMail(newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
+    const sendEmail = await sendMail(config.email,newUser.email, 'Registro Existoso', 'Holas', bodyHTML)
+
 
     return {savedUser, token}
     } catch (err) {
