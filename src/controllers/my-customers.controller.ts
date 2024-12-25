@@ -63,7 +63,8 @@ const createMyCustomer = async(req: Request, res: Response) => {
         // TODO: AQUI SE LE ENVIA UN CORREO AL USUARIO CREADO PARA QUE PUEDA CONFIRMAR Y VALIDAR SU CUENTA
 
         // TODO: PASARLO A UNA FUNCIONA APARTE
-        const verificationLink = `http://localhost:4200/auth/verify-email?token=${token}&byAssistant=true`;
+        //const verificationLink = `http://localhost:4200/auth/verify-email?token=${token}&byAssistant=true`;
+        const verificationLink = `http://167.88.43.130/nadarfront/auth/verify-email?token=${token}&byAssistant=true`;
         const bodyHTML = `
             <div>
                 <h1>Verifica tu cuenta dando click en el siguiente enlace</h1>
