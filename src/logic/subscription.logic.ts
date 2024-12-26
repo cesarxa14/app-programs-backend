@@ -19,6 +19,13 @@ export class SubscriptionLogic {
         try {
             const { user_id, service, startDate, endDate } = body;
 
+            const verifyActiveSubs = await this.verifyActiveSubs(user_id);
+
+            console.log('verifyActiveSubs', verifyActiveSubs)
+            if(verifyActiveSubs.length > 0){
+                throw new Error('Usuario cuenta con una subscripción activa!')
+            }
+
             const packageData = await packageLogic.getPackageById(service);
 
             console.log('packageData', packageData)
@@ -115,6 +122,26 @@ export class SubscriptionLogic {
             const updatedSubscription = await AppDataSource.getRepository(Subscription).save(subscriptionToUpdate);
             return updatedSubscription;
         } catch (err) {
+            console.log('err: ', err)
+            throw err;
+        }
+    }
+
+    async verifyActiveSubs(userId: number){
+        try{
+            console.log('userId', userId)
+            let sql = `
+                 SELECT s.*
+                    FROM subscriptions s
+                    WHERE s.deleted = 0
+                    AND s.user_id = $1
+					AND s."isActive" = true
+                    ORDER BY s.id DESC
+            `;
+            const results = await AppDataSource.query(sql, [userId])
+            return results;
+
+        } catch(err) {
             console.log('err: ', err)
             throw err;
         }

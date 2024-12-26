@@ -11,6 +11,8 @@ import { Sale } from "../entities/Sale";
 import { Product } from "../entities/Product";
 import { Assist } from "../entities/Assists";
 
+dotenv.config();
+
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 const options : DataSourceOptions= {
   type: "postgres",
@@ -38,5 +40,6 @@ export const AppDataSource = new DataSource(options)
     console.log('Data Source has been initialized!');
   })
   .catch((err) => {
+    console.log('options: ', options)
     console.error('Error during Data Source initialization', err);
   });

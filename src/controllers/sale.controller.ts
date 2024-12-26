@@ -21,7 +21,11 @@ const createSale = async(req: Request, res: Response) => {
         const savedRole = await saleLogic.createSale(req.body);
         res.status(201).json(savedRole);
     } catch(err) {
-        return res.status(400).json({message: err})
+        console.log('errrrorrrrr: ', err)
+        return res.status(500).json({
+            message: err instanceof Error ? err.message : 'Error interno del servidor',
+            error: err
+        });
     }
 }
 

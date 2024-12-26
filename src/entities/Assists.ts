@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { User } from './User';
 import { Program } from './Program';
 import { Package } from './Package';
+import { Subscription } from './Subscription';
 
 
 export enum productStatus {
@@ -31,6 +32,12 @@ export class Assist {
   @ManyToOne(() => Package, (pack) => pack.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'package_id' }) 
   package: Package;
+
+
+  @ManyToOne(() => Subscription, (sub) => sub.id, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'subscription_id' }) 
+  subscription: Subscription;
+  
 
   @Column({nullable: true, type: 'varchar'})
   classHour: string;

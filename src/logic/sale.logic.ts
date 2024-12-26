@@ -55,9 +55,8 @@ export class SaleLogic {
             newSale.customer = customerId;
 
             let date = new Date();
-            // todo: obtener la fecha inicio y fin del servicio
+            
             if(category == 'servicio'){
-                
                 await subscriptionLogic.createSubscription({user_id: customerId, service: itemId , startDate: date , endDate: date})
             }else if(category == 'producto'){
                 await purchaseLogic.createPurchase({user_id: customerId, product_id: itemId, amount: amount})

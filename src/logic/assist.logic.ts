@@ -75,6 +75,7 @@ export class AssistLogic {
                         CONCAT(assistant.name, ' ', assistant.lastname) AS instructor,
                         CONCAT(student.name, ' ', student.lastname) AS student, 
                         program.name AS program_name
+						
                     FROM 
                         assists assist
                     INNER JOIN 
@@ -85,10 +86,14 @@ export class AssistLogic {
                         programs program ON assist.program_id = program.id
                     INNER JOIN 
                         packages package ON assist.package_id = package.id
-                    WHERE 
-                        student.id = $1
-                        AND assist.deleted = 0
-                    ORDER BY assist.id DESC
+                    INNER JOIN
+                      subscriptions sub ON sub.id = assist.subscription_id 
+                              WHERE 
+                                  student.id = $1
+                                  AND assist.deleted = 0
+                      and sub."isActive" = true
+                      
+                              ORDER BY assist.id DESC
                        
             `
 
@@ -104,7 +109,7 @@ export class AssistLogic {
 
     try {
 
-      const { program, assistant, student, pack, classHour, additional_notes } = body;
+      const { program, assistant, student, pack, subscription,  classHour, additional_notes } = body;
       const resultAssist = await this.getAssistsByUserPackages({ userId: student });
       const numberAssist = resultAssist.length;
       const numClasesResult = await packageLogic.getNumClassesByUser({ userId: student });
@@ -124,6 +129,7 @@ export class AssistLogic {
       newAssist.package = pack;
       newAssist.classHour = classHour
       newAssist.additional_notes = additional_notes;
+      newAssist.subscription = subscription;
 
       const savedAssist = await AppDataSource.getRepository(Assist).save(newAssist);
 
@@ -136,6 +142,7 @@ export class AssistLogic {
 
         const subscriptionFound = await AppDataSource.getRepository(Subscription).findOne({
           where: {
+            id: subscription,
             service: fullAssist.package,
             user: fullAssist.student
           }
