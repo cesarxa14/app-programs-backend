@@ -36,6 +36,9 @@ export class Sale {
   @Column({nullable: false, type: 'timestamp'})
   saleDate: Date;
 
+  @Column({nullable: false, type: 'timestamp'})
+  startDate: Date;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 

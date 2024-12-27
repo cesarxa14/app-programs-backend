@@ -38,7 +38,7 @@ export class SaleLogic {
 
     async createSale(body:any){
         try {
-            const { amount, category, igv, saleDate, 
+            const { amount, category, igv, saleDate, startDate,
                 payment_method, saleName, itemId,  type_voucher,
                 sellerId, customerId} = body;
 
@@ -53,6 +53,7 @@ export class SaleLogic {
             newSale.type_voucher = type_voucher;
             newSale.seller = sellerId;
             newSale.customer = customerId;
+            newSale.startDate = startDate;
 
             let date = new Date();
             
