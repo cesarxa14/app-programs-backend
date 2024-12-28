@@ -39,6 +39,7 @@ const getPackages = async(req: Request, res: Response) => {
                 FROM packages p
                 INNER JOIN programs pr ON p.program_id = pr.id
                 INNER JOIN users u ON u.id = pr.user_id
+                WHERE p.deleted = 0
                 ORDER BY p.id DESC
         `
         const results = await AppDataSource.query(sql)
@@ -81,7 +82,7 @@ const getNumClassesByUser = async(req: Request, res: Response) => {
 const updatePackage = async(req: Request, res: Response) => {
     try{
         const {id} = req.params;
-        const {program, name, num_clases, expiration, cost, status} = req.body;
+        const {program, name, num_clases, expiration, cost, status, activeDays, activeHours} = req.body;
 
         // Buscar la entidad por ID
         const packageToUpdate = await AppDataSource.getRepository(Package).findOneBy({ id: Number(id) });
@@ -95,6 +96,8 @@ const updatePackage = async(req: Request, res: Response) => {
         packageToUpdate.expiration = expiration || packageToUpdate.expiration;
         packageToUpdate.cost = cost || packageToUpdate.cost;
         packageToUpdate.status = status || packageToUpdate.status;
+        packageToUpdate.activeDays = JSON.stringify(activeDays) || packageToUpdate.status;
+        packageToUpdate.activeHours = JSON.stringify(activeHours) || packageToUpdate.status;
 
         const updatedProgram = await AppDataSource.getRepository(Package).save(packageToUpdate);
         return res.json({data: updatedProgram})
