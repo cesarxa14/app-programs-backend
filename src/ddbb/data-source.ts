@@ -10,6 +10,7 @@ import { Book } from "../entities/Book";
 import { Sale } from "../entities/Sale";
 import { Product } from "../entities/Product";
 import { Assist } from "../entities/Assists";
+import { Hour } from "../entities/Hour";
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ const options : DataSourceOptions= {
   synchronize: true,
 //logging logs sql command on the treminal
   logging: NODE_ENV === "dev" ? false : false,
-  entities: [User, Program,Package, Role, Subscription, Purchase, Book, Sale, Product, Assist], 
+  entities: [User, Program,Package, Role, Subscription, Purchase, Book, Sale, Product, Assist, Hour], 
 
   // migrations: [__dirname + "/migration/*.ts"],
   // subscribers: [],
