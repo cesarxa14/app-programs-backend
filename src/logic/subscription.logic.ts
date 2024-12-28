@@ -90,6 +90,7 @@ export class SubscriptionLogic {
         try {
             const {userId} = query;
             console.log('userId', userId)
+            //TODO:  validar que la fecha actual sea menor que la fecha de inicio en la venta + los dias de vigencia
             let sql = `
                     SELECT s.*, p."activeHours"
                     FROM subscriptions s

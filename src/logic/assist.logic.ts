@@ -91,13 +91,54 @@ export class AssistLogic {
                               WHERE 
                                   student.id = $1
                                   AND assist.deleted = 0
-                      and sub."isActive" = true
+                                  AND sub."isActive" = true
                       
                               ORDER BY assist.id DESC
                        
             `
 
       const results = await AppDataSource.query(sql, [userId])
+
+      return results;
+    } catch (err) {
+      console.log('error: ', err)
+    }
+  }
+
+  async getLastAssistsByUserPackages(assistId: any) {
+
+    try {
+
+      let sql = `
+                   SELECT 
+                        assist.created_at AS assistDate,
+                        assist."classHour" AS classHour, 
+                        CONCAT(assistant.name, ' ', assistant.lastname) AS instructor,
+                        CONCAT(student.name, ' ', student.lastname) AS student, 
+                        program.name AS program_name
+						
+                    FROM 
+                        assists assist
+                    INNER JOIN 
+                        users assistant ON assist.assistant_id = assistant.id
+                    INNER JOIN 
+                        users student ON assist.student_id = student.id
+                    INNER JOIN 
+                        programs program ON assist.program_id = program.id
+                    INNER JOIN 
+                        packages package ON assist.package_id = package.id
+                    INNER JOIN
+                      subscriptions sub ON sub.id = assist.subscription_id 
+                              WHERE 
+                                 
+                                   assist.deleted = 0
+                                  
+                      			AND assist.id = $1
+                              ORDER BY assist.id DESC
+                       
+            `
+
+      const results = await AppDataSource.query(sql, [assistId])
 
       return results;
     } catch (err) {
@@ -151,9 +192,16 @@ export class AssistLogic {
         await AppDataSource.getRepository(Subscription).save(subscriptionFound)
         console.log('Subscription updated successfully')
 
+        console.log('id', savedAssist.id)
+        const assistData = await this.getLastAssistsByUserPackages(savedAssist.id)
+        console.log('assistData: ', assistData)
+        return {isLast: true, fullAssist: assistData}
+
+      }else {
+        return {isLast: false, fullAssist};
       }
 
-      return fullAssist;
+      
     } catch (err) {
       console.log('err: ', err)
       throw err;

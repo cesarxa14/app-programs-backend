@@ -12,6 +12,7 @@ const {ProductRoutes} = require('./routes/product.route')
 const {AsssitRoutes} = require('./routes/assist.route')
 const {UserRoutes} = require('./routes/user.route')
 const {HourRoutes} = require('./routes/hour.route')
+const {ReportRoutes} = require('./routes/report.route')
 
 
 function indexRoutes(app: Express){
@@ -28,6 +29,7 @@ function indexRoutes(app: Express){
     AsssitRoutes(app);
     UserRoutes(app);
     HourRoutes(app);
+    ReportRoutes(app);
 
 }
 
