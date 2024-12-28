@@ -24,7 +24,7 @@ const options : DataSourceOptions= {
   database: DB_DATABASE || 'nadardb',
 
   // synchronize: NODE_ENV === "dev" ? false : false,
-  synchronize: true,
+  synchronize: false,
 //logging logs sql command on the treminal
   logging: NODE_ENV === "dev" ? false : false,
   entities: [User, Program,Package, Role, Subscription, Purchase, Book, Sale, Product, Assist, Hour], 
