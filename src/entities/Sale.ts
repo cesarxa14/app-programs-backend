@@ -31,6 +31,9 @@ export class Sale {
   amount: number;
 
   @Column({nullable: false, type: 'float'})
+  itemId: number;
+
+  @Column({nullable: false, type: 'float'})
   igv: number;
 
   @Column({nullable: false, type: 'timestamp'})

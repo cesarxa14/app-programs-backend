@@ -54,17 +54,21 @@ export class SaleLogic {
             newSale.seller = sellerId;
             newSale.customer = customerId;
             newSale.startDate = startDate;
+            newSale.itemId = itemId;
+
+            const savedSale = await AppDataSource.getRepository(Sale).save(newSale);
 
             let date = new Date();
             
             if(category == 'servicio'){
-                await subscriptionLogic.createSubscription({user_id: customerId, service: itemId , startDate: date , endDate: date})
+                await subscriptionLogic.createSubscription({user_id: customerId, service: itemId , 
+                                                            startDate: date , endDate: date,
+                                                            sale_id: savedSale.id
+                                                        })
             }else if(category == 'producto'){
                 await purchaseLogic.createPurchase({user_id: customerId, product_id: itemId, amount: amount})
             }
-
-            const savedSale = await AppDataSource.getRepository(Sale).save(newSale);
-
+            
             return savedSale;
 
         } catch(err) {

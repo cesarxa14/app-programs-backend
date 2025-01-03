@@ -17,7 +17,7 @@ export class SubscriptionLogic {
     async createSubscription(body: any){
 
         try {
-            const { user_id, service, startDate, endDate } = body;
+            const { user_id, service, startDate, endDate, sale_id } = body;
 
             const verifyActiveSubs = await this.verifyActiveSubs(user_id);
 
@@ -36,6 +36,7 @@ export class SubscriptionLogic {
             newSubscription.service = packageData;
             newSubscription.startDate = packageData.program.startDate;
             newSubscription.endDate = packageData.program.endDate;
+            newSubscription.sale = sale_id;
         
 
             const savedSubscription = await AppDataSource.getRepository(Subscription).save(newSubscription);

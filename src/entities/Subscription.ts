@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
 import { Package } from './Package';
+import { Sale } from './Sale';
 
 @Entity({name: 'subscriptions'})
 export class Subscription {
@@ -23,6 +24,10 @@ export class Subscription {
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' }) 
   user: User;
+
+  @ManyToOne(() => Sale, (sale) => sale.id, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'sale_id' }) 
+  sale: Sale;
 
   @Column({nullable: false, type: 'smallint', default: 0})
   deleted: number;
