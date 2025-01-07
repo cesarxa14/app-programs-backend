@@ -6,8 +6,10 @@ import * as jwt from 'jsonwebtoken';
 import { sendMail } from "../logic/logic_mailer";
 import { MyCustomerLogic } from "../logic/my-customer.logic";
 import config  from '../config/mail.config';
+import { UserLogic } from "../logic/user.logic";
 
 const myCustomerLogic = new MyCustomerLogic(AppDataSource)
+const userLogic = new UserLogic(AppDataSource)
 
 const getMyCustomers = async(req: Request, res: Response) => {
     try{
@@ -33,8 +35,18 @@ const getMyCustomersBySearch = async(req: Request, res: Response) => {
 const createMyCustomer = async(req: Request, res: Response) => {
 
     console.log('body: ', req.body)
-    const { createdBy, name, lastname, email, password, phone, country, department, province, district, type_document, document, birthdate, medical_history } = req.body;
+    const { createdBy, name, lastname, email, password, phone, 
+        country, department, province, district, gender,
+         type_document, document, birthdate, medical_history } = req.body;
     try{
+
+        const userFound = await userLogic.getUserByEmail(email)
+
+        if(userFound) return res.status(400).send({message: "El email ya en uso"})
+
+        const userFound2 = await userLogic.getUserByDocument({type_document, document})
+
+        if(userFound2) return res.status(400).send({message: "Numero de documento ya en uso"})
 
         const salt = await bcrypt.genSalt(10);
         const passwordEncrypt = await bcrypt.hash(password, salt)
@@ -49,6 +61,7 @@ const createMyCustomer = async(req: Request, res: Response) => {
         createUserMyCustomer.department = department;
         createUserMyCustomer.province = province;
         createUserMyCustomer.district = district;
+        createUserMyCustomer.gender = gender;
         createUserMyCustomer.type_document = type_document;
         createUserMyCustomer.document = document;
         createUserMyCustomer.birthdate = birthdate;

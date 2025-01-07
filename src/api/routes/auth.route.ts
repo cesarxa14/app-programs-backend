@@ -11,6 +11,8 @@ function AuthRoutes(app: Express){
     router.post('/register', AuthController.register);
     router.post('/complete-register', AuthController.completeRegister);
     router.post('/verifyUser', AuthController.verifyUser);
+    router.post('/email-reset-password', AuthController.sendEmailResetPassword);
+    router.post('/reset-password', AuthController.resetPassword);
     
 }
 

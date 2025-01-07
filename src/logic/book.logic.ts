@@ -115,6 +115,8 @@ export class BookLogic {
                     WHERE 
                         user_booked.id = $1
                         AND book.deleted = 0
+
+                    ORDER BY book.id DESC
                    
         `
             

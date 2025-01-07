@@ -28,16 +28,16 @@ const getPrograms = async(req: Request, res: Response) => {
     try{ 
         const {userId} = req.query;
         console.log('userId', userId)
-        const params = [];
+        // const params = [];
         let sql = `
             SELECT p.* 
                 FROM programs p
-                INNER JOIN users u ON u.id = p.user_id
-                WHERE p.user_id = $1
-                AND p.deleted = 0
+                
+                WHERE p.deleted = 0
+                ORDER BY p.id DESC;
         `
-        params.push(Number(userId))
-        const results = await AppDataSource.query(sql, params)
+        // params.push(Number(userId))
+        const results = await AppDataSource.query(sql)
         console.log('results:', results)
         return res.json({data: results})
     } catch (err) {

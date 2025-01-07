@@ -41,6 +41,7 @@ export class PackageLogic {
                 INNER JOIN users u ON u.id = s.user_id
                 WHERE u.id = $1
                 AND  s."isActive" = true
+                ORDER BY pa.id DESC;
             `
             const results = await AppDataSource.query(sql, [userId])
     

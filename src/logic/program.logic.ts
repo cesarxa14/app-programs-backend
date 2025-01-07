@@ -19,6 +19,7 @@ export class ProgramLogic {
                     INNER JOIN subscriptions s ON s.package_id = pa.id
                     WHERE s."isActive" = true
                     AND s.user_id = $1
+                    ORDER BY pr.id DESC;
             `;
 
             const results = await AppDataSource.query(sql, [userId])
@@ -42,7 +43,8 @@ export class ProgramLogic {
                         WHERE s.user_id = $1
                         AND s."isActive" = true
                         AND p.deleted = 0
-                        AND s."endDate" > NOW();
+                        AND s."endDate" > NOW()
+                        ORDER BY s.id DESC;
                 `
       
             const results = await AppDataSource.query(sql, [userId])

@@ -98,7 +98,8 @@ export class SubscriptionLogic {
                     INNER JOIN packages p ON p.id = s.package_id
                     WHERE s.user_id = $1
                     AND p.deleted = 0
-                    AND s."endDate" > NOW();
+                    AND s."endDate" > NOW()
+                    ORDER BY s.id DESC;
                 `
       
             const results = await AppDataSource.query(sql, [userId])

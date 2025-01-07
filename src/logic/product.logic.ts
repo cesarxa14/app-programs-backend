@@ -20,7 +20,7 @@ export class ProductLogic {
               FROM products p
 			        INNER JOIN users u ON u.id = p.user_id 
               WHERE p.deleted = 0
-              ORDER BY id DESC
+              ORDER BY p.id DESC
         `;
       
       const results = await AppDataSource.query(sql)

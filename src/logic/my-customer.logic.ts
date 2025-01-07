@@ -21,6 +21,7 @@ export class MyCustomerLogic {
                     WHERE role = 3
                     AND "createdBy" in ($1, -1)
                     AND deleted = 0
+                    ORDER BY id DESC;
             `
             const results = await AppDataSource.query(sql, [userId])
 
@@ -43,6 +44,7 @@ export class MyCustomerLogic {
                     WHERE role = 3
                     AND "createdBy" in ($1, -1)
                     AND deleted = 0
+                    
             `
             params.push(userId)
             if(byDocument){
@@ -51,6 +53,8 @@ export class MyCustomerLogic {
             if(byName){
                 sql += ` AND (LOWER(name) LIKE '%${byName.toLowerCase()}%' OR LOWER(lastname) LIKE '%${byName.toLowerCase()}%')`
             }
+
+            sql += ` ORDER BY id DESC;`
             console.log(sql)
             const results = await AppDataSource.query(sql, params)
 

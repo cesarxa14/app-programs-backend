@@ -45,6 +45,21 @@ export class UserLogic {
     }
   }
 
+  async getUserByDocument({type_document, document}: any){
+    try {
+      const userFound = await AppDataSource.getRepository(User).findOne({
+        where: {
+          type_document: type_document,
+          document: document
+        }
+      }); 
+
+      return userFound;
+    } catch (err) {
+      console.log('err: ', err);
+    }
+  }
+
   // todo: pasarlo con dto para validar
   async register(body: any){
     try {
@@ -62,6 +77,7 @@ export class UserLogic {
       newUser.createdBy = createdBy
 
       
+      console.log('newUser: ', newUser)
 
     const savedUser = await AppDataSource.getRepository(User).save(newUser);
 
