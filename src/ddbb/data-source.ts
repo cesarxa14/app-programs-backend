@@ -17,7 +17,8 @@ dotenv.config();
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 const options : DataSourceOptions= {
   type: "postgres",
-  host: DB_HOST || 'localhost',
+  //host: DB_HOST || 'localhost',
+  host: DB_HOST || '167.88.43.130',
   port: parseInt(DB_PORT || "5432"),
   username: DB_USERNAME || 'nadar_user',
   password: DB_PASSWORD || '$naD4r,.*v1da',

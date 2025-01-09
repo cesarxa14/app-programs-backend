@@ -17,6 +17,19 @@ const getUserById = async(req: Request, res: Response) => {
     }
   }
 
+  const getUserByEmail = async(req: Request, res: Response) => {
+    try{
+        const params = req.params
+        console.log('params', params)
+        let userId = params.id
+        const results = await userLogic.getUserByEmail(userId);
+        return res.json({data: results})
+    } catch (err) {
+        console.log('err: ', err)
+        throw err;
+    }
+  }
+
   export const UserController = {
-    getUserById
+    getUserById,getUserByEmail
 };

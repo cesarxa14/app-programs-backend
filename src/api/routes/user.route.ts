@@ -13,6 +13,9 @@ function UserRoutes(app: Express){
     // router.post('/', MyCustomerController.createMyCustomer);
     // router.put('/:id', MyCustomerController.updateMyCustomer);
     // router.delete('/:id', MyCustomerController.deleteCustomer);
+    router.get('/getByEmail/:id',
+        // [ verifyToken] ,
+        UserController.getUserByEmail);
 }
 
 export {UserRoutes}

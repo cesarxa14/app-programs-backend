@@ -21,9 +21,9 @@ export class SaleLogic {
             const {selledId} = query;
 
             const results = await AppDataSource.getRepository(Sale).find({
-                where: {
+                /*where: {
                   seller: selledId
-                },
+                },*/
                 relations: ["customer"],
                 order:{
                     saleDate:"DESC"

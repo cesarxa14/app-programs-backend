@@ -146,7 +146,7 @@ const sendEmailResetPassword = async(req: Request, res: Response) => {
     const token = jwt.sign({id: userFound.email}, process.env.JWT_SECRET_KEY , {expiresIn: 30}); 
     
     const verificationLink = `http://localhost:4200/auth/reset-password?token=${token}`;
-    // const verificationLink = `http://167.88.43.130/nadarfront/auth/reset-password?token=${token}`;
+     //const verificationLink = `http://167.88.43.130/nadarfront/auth/reset-password?token=${token}`;
     const bodyHTML = `
           <div>
               <h1>Reestablece tu contraseña dando click en el siguiente enlace: </h1>

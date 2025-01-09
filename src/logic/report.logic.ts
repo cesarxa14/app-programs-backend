@@ -127,6 +127,7 @@ export class ReportLogic {
         SELECT  u.gender, COUNT(*) 
         FROM users u
         WHERE gender IS NOT NULL
+        AND role = 3
         GROUP BY u.gender
       `
 

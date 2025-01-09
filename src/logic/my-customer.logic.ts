@@ -18,12 +18,21 @@ export class MyCustomerLogic {
             let sql = `
                 SELECT *
                     FROM users
-                    WHERE role = 3
-                    AND "createdBy" in ($1, -1)
+                    WHERE role = 3                    
                     AND deleted = 0
                     ORDER BY id DESC;
             `
-            const results = await AppDataSource.query(sql, [userId])
+
+            let sql2 = `
+            SELECT *
+                FROM users
+                WHERE role = 3
+                AND "createdBy" in ($1, -1)
+                AND deleted = 0
+                ORDER BY id DESC;
+        `
+            //const results = await AppDataSource.query(sql, [userId])
+            const results = await AppDataSource.query(sql)
 
             return results;
 
@@ -42,11 +51,22 @@ export class MyCustomerLogic {
                 SELECT *
                     FROM users
                     WHERE role = 3
+                    AND deleted = 0
+                    
+            `
+
+
+            let sql2 = `
+                SELECT *
+                    FROM users
+                    WHERE role = 3
                     AND "createdBy" in ($1, -1)
                     AND deleted = 0
                     
             `
-            params.push(userId)
+
+            
+            //params.push(userId)
             if(byDocument){
                 sql += ` AND document LIKE '%${byDocument.toLowerCase()}%'`
             }
@@ -56,7 +76,9 @@ export class MyCustomerLogic {
 
             sql += ` ORDER BY id DESC;`
             console.log(sql)
-            const results = await AppDataSource.query(sql, params)
+            //const results = await AppDataSource.query(sql, params)
+            const results = await AppDataSource.query(sql)
+            
 
             return results;
 
