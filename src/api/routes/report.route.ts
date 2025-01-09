@@ -14,6 +14,10 @@ function ReportRoutes(app: Express){
     router.get('/getUsersByGender', ReportController.getUsersByGender);
     router.get('/getUsersInfoDemographics', ReportController.getUsersInfoDemographics);
     router.get('/getSalesLineTime', ReportController.getSalesLineTime);
+    router.get('/getTotalEarningSales', ReportController.getTotalEarningSales);
+    router.get('/getSalesByTypeVoucher', ReportController.getSalesByTypeVoucher);
+    router.get('/getSalesByPaymentMethod', ReportController.getSalesByPaymentMethod);
+    
     // router.post('/', ReportController.createRole);
 }
 

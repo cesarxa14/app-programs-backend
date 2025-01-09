@@ -86,6 +86,39 @@ const getSalesLineTime = async(req: Request, res: Response) => {
 }
 
 
+const getTotalEarningSales = async(req: Request, res: Response) => {
+
+    try{
+        const sales = await reportLogic.getTotalEarningSales();
+        console.log(sales)
+        const total = sales[0];
+        res.status(200).json(total);
+    } catch(err) {
+        return res.status(400).json({message: err})
+    }
+}
+
+const getSalesByTypeVoucher = async(req: Request, res: Response) => {
+
+    try{
+        const sales = await reportLogic.getSalesByTypeVoucher();
+        res.status(200).json(sales);
+    } catch(err) {
+        return res.status(400).json({message: err})
+    }
+}
+
+const getSalesByPaymentMethod = async(req: Request, res: Response) => {
+
+    try{
+        const sales = await reportLogic.getSalesByPaymentMethod();
+        res.status(200).json(sales);
+    } catch(err) {
+        return res.status(400).json({message: err})
+    }
+}
+
+
 
 
 
@@ -97,5 +130,8 @@ export const ReportController = {
     getEarningsByPrograms,
     getUsersByGender,
     getUsersInfoDemographics,
-    getSalesLineTime
+    getSalesLineTime,
+    getTotalEarningSales,
+    getSalesByTypeVoucher,
+    getSalesByPaymentMethod
 };

@@ -236,6 +236,78 @@ export class ReportLogic {
     }
   }
 
+  async getTotalEarningSales(){
+    try{
+
+      let sql = `
+        SELECT sum(+amount + igv) AS total
+        FROM sales 
+      `
+
+      const results = await AppDataSource.query(sql);
+
+      return results;
+
+    } catch(err) {
+      console.log('err: ', err)
+      throw err;
+    }
+  }
+
+  async getSalesByTypeVoucher(){
+    try{
+
+      let sql = `
+        SELECT 
+            CASE 
+                WHEN type_voucher = 'nota_venta' THEN 'Nota venta'
+                WHEN type_voucher = 'boleta' THEN 'Boleta'
+                WHEN type_voucher = 'factura' THEN 'Factura'
+                ELSE 'OTRO'
+            END AS voucher_type,
+            COUNT(*) AS total
+        FROM sales
+        GROUP BY type_voucher;
+      `
+
+      const results = await AppDataSource.query(sql);
+
+      return results;
+
+    } catch(err) {
+      console.log('err: ', err)
+      throw err;
+    }
+  }
+
+  async getSalesByPaymentMethod(){
+    try{
+
+      let sql = `
+        SELECT CASE 
+              WHEN payment_method = 'efectivo' THEN 'Efectivo'
+              WHEN payment_method = 'tarjeta' THEN 'Tarjeta'
+              WHEN payment_method = 'yape' THEN 'Yape'
+              WHEN payment_method = 'plin' THEN 'Plin'
+              WHEN payment_method = 'transferencia' THEN 'Transferencia'
+              ELSE 'OTRO'
+            END AS payment_method,
+          COUNT(*) as total
+        FROM sales
+        GROUP BY payment_method;
+      `
+
+      const results = await AppDataSource.query(sql);
+
+      return results;
+
+    } catch(err) {
+      console.log('err: ', err)
+      throw err;
+    }
+  }
+
+
   
 
 }
