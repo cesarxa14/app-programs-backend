@@ -84,7 +84,8 @@ export class UserLogic {
     const token = jwt.sign({id: savedUser.id}, process.env.JWT_SECRET_KEY , {expiresIn: 30}); 
     // TODO: PASARLO A UNA FUNCIONA APARTE
     //const verificationLink = `http://localhost:4200/auth/verify-email?token=${token}`;
-    const verificationLink = `http://167.88.43.130/nadarfront/auth/verify-email?token=${token}`;
+    //const verificationLink = `http://167.88.43.130/nadarfront/auth/verify-email?token=${token}`;
+    const verificationLink = `https://clientes.nadaresvidaperu.pe/nadarfront/auth/verify-email?token=${token}`;
       
     const bodyHTML = `
         <div>
