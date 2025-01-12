@@ -1,7 +1,6 @@
-import { DataSource } from "typeorm";
+import { Between, DataSource } from "typeorm";
 import { AppDataSource } from "../ddbb/data-source";
 import { User } from "../entities/User";
-
 
 
 export class ReportLogic {
@@ -12,24 +11,37 @@ export class ReportLogic {
     this.dataSource = dataSource;
   }
 
-  async getQuantityStudent(){
+  async getQuantityStudent(startDate:any, endDate:any){
     try{
+        console.log('getQuantityStudent: ', {startDate, endDate})
+        // const [users, count] = await this.dataSource.getRepository(User).findAndCount({
+        //     where: {
+        //       role: 3,
+        //       deleted: 0,
+        //       createdAt: Between('2024-12-26', '2024-12-26')
+        //     },
+        // });
 
-        const [users, count] = await this.dataSource.getRepository(User).findAndCount({
-            where: {
-              role: 3,
-              deleted: 0,
-            },
-          });
+        let sql = `
+          SELECT count(*) AS students 
+          FROM users
+          WHERE role = 3
+          AND deleted = 0
+          AND created_at BETWEEN $1 and $2
+        `
+        const results = await AppDataSource.query(sql, [startDate, endDate]);
 
-      return {students: count};
+        console.log('results: ', results[0])
+
+        return results;
+      // return {students: count};
     } catch(err) {
       console.log('err: ', err)
       throw err;
     }
   }
 
-  async getStudentsByPrograms(){
+  async getStudentsByPrograms(startDate:any, endDate:any ){
     try{
 
       let sql = `
@@ -41,10 +53,11 @@ export class ReportLogic {
         INNER JOIN users u ON u.id = s.user_id
         WHERE s."isActive" = true
         AND u.deleted = 0
+        AND s.created_at BETWEEN $1 AND $2
         GROUP BY pr.id
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -54,7 +67,7 @@ export class ReportLogic {
     }
   }
 
-  async getStudentsByPackages(){
+  async getStudentsByPackages(startDate:any, endDate:any){
     try{
 
       let sql = `
@@ -66,10 +79,11 @@ export class ReportLogic {
         WHERE s."isActive" = true
         AND u.deleted = 0
         AND pa.deleted = 0
+        AND s.created_at BETWEEN $1 AND $2
         GROUP BY pa.id
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -79,17 +93,20 @@ export class ReportLogic {
     }
   } 
 
-  async getEarningsByPackages(){
+
+
+  async getEarningsByPackages(startDate:any, endDate:any){
     try{
 
       let sql = `
-        SELECT  pa.name AS package_name, sum(sa.amount + sa.igv) AS earning
+        SELECT  pa.name AS package_name, ROUND(SUM(sa.amount + sa.igv)::numeric, 2) AS earning
         FROM sales sa
         INNER JOIN packages pa ON pa.id = sa."itemId" AND sa.category = 'servicio'
+        WHERE sa.created_at BETWEEN $1 and $2
         GROUP BY pa.id
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -99,18 +116,19 @@ export class ReportLogic {
     }
   } 
 
-  async getEarningsByPrograms(){
+  async getEarningsByPrograms(startDate:any, endDate:any){
     try{
 
       let sql = `
-        SELECT pr.id, pr.name AS program_name, sum(sa.amount + sa.igv) AS earning
+        SELECT pr.id, pr.name AS program_name, ROUND(SUM(sa.amount + sa.igv)::numeric, 2) AS earning
         FROM sales sa
         INNER JOIN packages pa ON pa.id = sa."itemId" AND sa.category = 'servicio'
         INNER JOIN programs pr ON pr.id = pa.program_id
+        WHERE sa.created_at BETWEEN $1 and $2
         GROUP BY pr.id
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -120,7 +138,7 @@ export class ReportLogic {
     }
   }
 
-  async getUsersByGender(){
+  async getUsersByGender(startDate:any, endDate:any){
     try{
 
       let sql = `
@@ -128,10 +146,11 @@ export class ReportLogic {
         FROM users u
         WHERE gender IS NOT NULL
         AND role = 3
+        AND created_at BETWEEN $1 AND $2
         GROUP BY u.gender
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -141,21 +160,22 @@ export class ReportLogic {
     }
   }
 
-  async getSalesLineTime(){
+  async getSalesLineTime(startDate:any, endDate:any){
     try{
 
       let sql = `
         WITH months AS (
             SELECT generate_series(
-                '2025-01-01'::date,
-                '2025-12-01'::date,
+                $1::date,
+                $2::date,
                 '1 month'::interval
             )::date AS mes
         ),
         monthly_sales AS (
             SELECT
                 p.id AS package_id,
-                TO_CHAR(m.mes, 'FMMon') AS mes_nombre,
+                TO_CHAR(m.mes, 'FMMon YYYY') AS mes_nombre,
+                EXTRACT(YEAR FROM m.mes) AS anio,
                 EXTRACT(MONTH FROM m.mes) AS mes_numero,
                 COALESCE(COUNT(s.id), 0) AS total_ventas
             FROM packages p
@@ -173,15 +193,16 @@ export class ReportLogic {
                     'month', ms.mes_nombre,
                     'sales', ms.total_ventas
                 )
-                ORDER BY ms.mes_numero
+                ORDER BY ms.anio, ms.mes_numero -- Ordenar por año y luego por mes
             ) AS month_sales
         FROM packages pa
         LEFT JOIN monthly_sales ms ON ms.package_id = pa.id
         GROUP BY pa.id, pa.name
         ORDER BY pa.name;
+
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -192,41 +213,44 @@ export class ReportLogic {
   }
 
   
-  async getUsersInfoDemographics(){
+  async getUsersInfoDemographics(startDate:any, endDate:any){
     try{
 
       let sqlDeparments = `
         SELECT department, COUNT(*) AS students
         FROM users
-        WHERE department IS NOT NULL
-        OR department <> ''
+        WHERE (department IS NOT NULL
+        OR department <> '')
+        AND created_at BETWEEN $1 AND $2
         GROUP BY department;
 
       `
 
-      const resultDepartments = await AppDataSource.query(sqlDeparments);
+      const resultDepartments = await AppDataSource.query(sqlDeparments, [startDate, endDate]);
 
       let sqlProvinces = `
         SELECT province, COUNT(*) AS students
         FROM users
-        WHERE province IS NOT NULL
-        OR province <> ''
+        WHERE (province IS NOT NULL
+        OR province <> '')
+        AND created_at BETWEEN $1 AND $2
         GROUP BY province;
 
       `
 
-      const resultProvinces = await AppDataSource.query(sqlProvinces);
+      const resultProvinces = await AppDataSource.query(sqlProvinces, [startDate, endDate]);
 
       let sqlDistricts = `
         SELECT district, COUNT(*) AS students
         FROM users
-        WHERE district IS NOT NULL
-        OR district <> ''
+        WHERE (district IS NOT NULL
+        OR district <> '')
+        AND created_at BETWEEN $1 AND $2
         GROUP BY district;
 
       `
 
-      const resultDistricts = await AppDataSource.query(sqlDistricts);
+      const resultDistricts = await AppDataSource.query(sqlDistricts, [startDate, endDate]);
 
       return {resultDepartments, resultProvinces, resultDistricts};
 
@@ -236,15 +260,16 @@ export class ReportLogic {
     }
   }
 
-  async getTotalEarningSales(){
+  async getTotalEarningSales(startDate:any, endDate:any){
     try{
 
       let sql = `
         SELECT sum(+amount + igv) AS total
         FROM sales 
+        WHERE created_at BETWEEN $1 AND $2
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -254,7 +279,7 @@ export class ReportLogic {
     }
   }
 
-  async getSalesByTypeVoucher(){
+  async getSalesByTypeVoucher(startDate:any, endDate:any){
     try{
 
       let sql = `
@@ -267,10 +292,11 @@ export class ReportLogic {
             END AS voucher_type,
             COUNT(*) AS total
         FROM sales
+        WHERE created_at BETWEEN $1 AND $2
         GROUP BY type_voucher;
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
@@ -280,7 +306,7 @@ export class ReportLogic {
     }
   }
 
-  async getSalesByPaymentMethod(){
+  async getSalesByPaymentMethod(startDate:any, endDate:any){
     try{
 
       let sql = `
@@ -294,10 +320,11 @@ export class ReportLogic {
             END AS payment_method,
           COUNT(*) as total
         FROM sales
+        WHERE created_at BETWEEN $1 AND $2
         GROUP BY payment_method;
       `
 
-      const results = await AppDataSource.query(sql);
+      const results = await AppDataSource.query(sql, [startDate, endDate]);
 
       return results;
 
