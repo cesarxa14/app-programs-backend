@@ -146,11 +146,44 @@ export class AssistLogic {
     }
   }
 
+  async validateAssistLimitDate(package_id: number){
+    try{
+      let sql = `
+            SELECT 
+                  sa."startDate" + INTERVAL '1 day' * pa.expiration::INTEGER AS limit_date
+            FROM subscriptions su
+            JOIN sales sa ON sa.id = su.sale_id
+            JOIN packages pa ON pa.id = su.package_id
+            WHERE pa.id = $1
+            AND su."isActive" = true;
+                       
+        `;
+
+      const results = await AppDataSource.query(sql, [package_id])
+
+      return results;
+
+    } catch(err){
+      console.log('error: ', err)
+    }
+  }
+
   async createAssist(body: any) {
 
     try {
 
       const { program, assistant, student, pack, subscription,  classHour, additional_notes } = body;
+      console.log('body: ', body)
+
+      // VALIDAMOS QUE LA FECHA DE EXPIRACION SEA MAYOR AL DIA ACTUAL
+      const resultLimitDate = await this.validateAssistLimitDate(pack);
+      const limitDate = resultLimitDate[0].limit_date;
+      const today = new Date();
+      if (new Date(limitDate) < today) {
+        throw new Error("El paquete ya venció")
+      }
+
+      
       const resultAssist = await this.getAssistsByUserPackages({ userId: student });
       const numberAssist = resultAssist.length;
       const numClasesResult = await packageLogic.getNumClassesByUser({ userId: student });
