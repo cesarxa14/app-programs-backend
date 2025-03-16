@@ -62,7 +62,7 @@ export class SaleLogic {
             
             if(category == 'servicio'){
                 await subscriptionLogic.createSubscription({user_id: customerId, service: itemId , 
-                                                            startDate: date , endDate: date,
+                                                            startDate: startDate , endDate: date,
                                                             sale_id: savedSale.id
                                                         })
             }else if(category == 'producto'){

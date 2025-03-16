@@ -34,7 +34,7 @@ export class SubscriptionLogic {
             let newSubscription = new Subscription();
             newSubscription.user = user_id;
             newSubscription.service = packageData;
-            newSubscription.startDate = packageData.program.startDate;
+            newSubscription.startDate = startDate;
             newSubscription.endDate = packageData.program.endDate;
             newSubscription.sale = sale_id;
         
